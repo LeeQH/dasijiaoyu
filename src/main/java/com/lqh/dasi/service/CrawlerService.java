@@ -95,7 +95,34 @@ public class CrawlerService {
 	}
 	
 	
-	public List<List<List<String>>> getScoreRank(){
+	public List<List<List<String>>> getScoreRank(Crawler crawler,String scoreRank_src){
+		CrawlerUtils.get(crawler, scoreRank_src);
+		Document doc=CrawlerUtils.getDocument(crawler);
 		
+		List<String> col=null;
+		List<List<String>> row=null;
+		List<List<List<String>>> page=null;
+		Elements trs=null;
+		Elements tds=null;
+		Elements tables=null;
+		
+		tables=doc.select("table");
+		page=new ArrayList<List<List<String>>>();
+		for(int i=0,taSize=tables.size();i<taSize;i++){
+			trs=tables.get(i).select("tr");
+			row=new ArrayList<List<String>>();
+			for(int j=1,trSize=trs.size();j<trSize;j++){//忽略第一行
+				tds=trs.get(j).select("td");
+				col=new ArrayList<String>();
+				for(int k=0,tdSize=tds.size();k<tdSize;k++){
+					col.add(tds.get(k).text());
+				}
+				row.add(col);
+			}
+			page.add(row);
+		}
+		return page;
 	}
+	
+
 }
