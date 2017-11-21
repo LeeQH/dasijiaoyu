@@ -2,8 +2,6 @@ package com.lqh.dasi.controller;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -37,6 +35,7 @@ public class CrawlerController {
 	 */
 	@RequestMapping("/login.action")
 	public ModelAndView login(Teacher teacher){
+		System.out.println(teacher.toString());
 		Crawler crawler=new Crawler();
 		ls.login(crawler, teacher, URLConstant.LOGIN_URL);
 		Map<String,String> classids=ls.getClassId(crawler, URLConstant.QUERY_CLASS_URL);
@@ -81,7 +80,7 @@ public class CrawlerController {
 		List<List<List<String>>> page=ls.getScoreRank(crawler, URLConstant.QUERY_RANK_URL+teacher.getClassid());
 		crawler.close();
 		ListUtils.printArrayList(page);
-		ModelAndView mav=new ModelAndView("index.jsp");
+		ModelAndView mav=new ModelAndView("scoreRank.jsp");
 		mav.addObject("page",page);
 		return mav;
 	}

@@ -15,6 +15,9 @@
 		<mybatis.version>3.2.6</mybatis.version><!-- 设置mybatis为3.2.6 -->
 		<slf4j.version>1.7.25</slf4j.version><!-- 设置slf4j为1.7.7 -->
 		<log4j.version>1.2.17</log4j.version><!-- 设置log4j为1.2.17 -->
+		
+		<base>WEB-INF/classes</base>
+		<dasi.packagingExcludes>${base}/约束/**</dasi.packagingExcludes>
 	</properties>
 	
 	<dependencies>
@@ -123,6 +126,15 @@
 				<configuration>
 					<source>1.7</source>
 					<target>1.7</target>
+				</configuration>
+			</plugin>
+			
+			<plugin>
+			    <groupId>org.apache.maven.plugins</groupId>
+			    <artifactId>maven-war-plugin</artifactId>
+			    <version>3.2.0</version>
+				<configuration>
+					<packagingExcludes>${dasi.packagingExcludes}</packagingExcludes>
 				</configuration>
 			</plugin>
 		</plugins>

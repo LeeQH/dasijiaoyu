@@ -18,13 +18,26 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <title>功能页面</title>
 
 <!--     <script src="/static/js/jquery-3.1.1.min.js" type="text/javascript"></script> -->
-<%-- <script src="<%=basePath%>/static/js/index.js" type="text/javascript"></script> --%>
+<script type="text/javascript">
+	data=${stuInfo};
+	function infoSort(param,order){
+		data.sort(function(a,b){
+			if(order=='asc'){//升序
+				return a[param]-b[param]
+			}else{//默认降序desc
+				return b[param]-a[param]
+			}
+		});
+		
+	}
+
+</script>
 
 
 </head>
 <body>
-
-	<table>
+	<button onclick="sort(0,'ades')">12312</button>
+	<table id="default">
 		<c:forEach items="${stuInfo}" var="row">
 			<tr>
 				<c:forEach items="${row}" var="col">
