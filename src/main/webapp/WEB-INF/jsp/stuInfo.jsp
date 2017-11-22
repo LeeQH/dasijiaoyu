@@ -8,19 +8,21 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<base href="<%=basePath%>">
 
 <meta http-equiv="pragma" content="no-cache">
 <meta http-equiv="cache-control" content="no-cache">
 <meta http-equiv="expires" content="0">
 <meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
-<meta http-equiv="description" content="This is my page">
+<meta http-equiv="description" content="Student Info Page">
 <meta http-equiv="x-rim-auto-match" content="none">
-<title>功能页面</title>
+<title>学生信息页面</title>
 
-<script src="<%=basePath%>/static/js/jquery-3.1.1.min.js"
-	type="text/javascript"></script>
+<script src="<%=basePath%>/static/js/jquery-3.1.1.min.js" type="text/javascript"></script>
+<script src="<%=basePath%>/static/js/bootstrap.min.js" type="text/javascript"></script>
 <script src="<%=basePath%>/static/js/utils.js" type="text/javascript"></script>
+
+<link href="<%=basePath%>/static/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+
 <script type="text/javascript">
 	$(function() {
 		//获取二维数组
@@ -76,14 +78,18 @@
 
 </head>
 <body>
-	<select id="sortType"></select>
-	<select id="sortMethod">
-		<option value="asc">升序</option>
-		<option value="desc">降序</option>
-	</select>
-	<button onclick="goSort()">确定</button>
-
-	<table id="default">
+	<br>
+	<div class="form-inline">
+		<select class="form-control" id="sortType"></select>
+		<select class="form-control" id="sortMethod">
+			<option value="asc">升序</option>
+			<option value="desc">降序</option>
+		</select>
+		<button type="button" class="btn btn-primary" onclick="goSort()">确定</button>
+	</div>
+	<br>
+	<br>
+	<table class="table table-hover" id="default">
 		<thead id="head"></thead>
 		<tbody id="body"></tbody>
 	</table>

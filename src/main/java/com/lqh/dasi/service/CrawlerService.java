@@ -91,12 +91,12 @@ public class CrawlerService {
 				cols.add(tds.get(j).text());
 			}
 //			System.out.println();
-			Date time1=new Date();
-			Date time2=DateUtils.stringToDate(tds.get(8).text(),"yyyy-MM-dd");
-			if(time2==null)
+			Date now=new Date();
+			Date end=DateUtils.stringToDate(tds.get(8).text(),"yyyy-MM-dd");
+			if(end==null)
 				cols.add("剩余天数");
 			else 
-				cols.add(DateUtils.differentDays(time1, time2));
+				cols.add(DateUtils.differentDays(now, end));
 			rows.add(cols);
 		}
 		return rows;

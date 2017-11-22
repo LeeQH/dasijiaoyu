@@ -18,6 +18,9 @@ function clearTable(table) {
  */
 function addDataToTHead(thead, dataHead) {
 	var tr = document.createElement('tr');
+	var th1 = document.createElement('th');
+	th1.innerText = '编号';
+	tr.appendChild(th1);
 	for (var i = 0; i < dataHead.length; i++) {
 		var th = document.createElement('th');
 		th.innerText = dataHead[i];
@@ -34,6 +37,9 @@ function addDataToTHead(thead, dataHead) {
 function addDataToTBody(tbody, data) {
 	for (var i = 0; i < data.length; i++) {
 		var tr = document.createElement('tr');
+		var td1 = document.createElement('td');
+		td1.innerText = i+1;
+		tr.appendChild(td1);
 		for (var j = 0; j < data[i].length; j++) {
 			var td = document.createElement('td');
 			td.innerText = data[i][j];
