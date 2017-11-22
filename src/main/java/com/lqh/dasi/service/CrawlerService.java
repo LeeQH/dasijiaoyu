@@ -1,6 +1,7 @@
 package com.lqh.dasi.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,7 @@ import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 
 import com.lqh.dasi.commen.CrawlerUtils;
+import com.lqh.dasi.commen.DateUtils;
 import com.lqh.dasi.pojo.Crawler;
 import com.lqh.dasi.pojo.Teacher;
 
@@ -75,23 +77,29 @@ public class CrawlerService {
 		CrawlerUtils.get(crawler, stuInfo_src);
 		Document doc=CrawlerUtils.getDocument(crawler);
 		
-		List<String> col=null;
-		List<List<String>> row=new ArrayList<List<String>>();
+		List<String> cols=null;
+		List<List<String>> rows=new ArrayList<List<String>>();
 		
 		Element table=doc.select("table#studentList").first();
 		Elements trs=table.select("tr");
 		Elements tds=null;
 		for(int i=0,size=trs.size();i<size;i++){
 			tds=trs.get(i).select("td");
-			col=new ArrayList<String>();
+			cols=new ArrayList<String>();
 			for(int j=4;j<9;j++){
-				System.out.print(tds.get(j).text()+"\t");
-				col.add(tds.get(j).text());
+//				System.out.print(tds.get(j).text()+"\t");
+				cols.add(tds.get(j).text());
 			}
-			System.out.println();
-			row.add(col);
+//			System.out.println();
+			Date time1=new Date();
+			Date time2=DateUtils.stringToDate(tds.get(8).text(),"yyyy-MM-dd");
+			if(time2==null)
+				cols.add("剩余天数");
+			else 
+				cols.add(DateUtils.differentDays(time1, time2));
+			rows.add(cols);
 		}
-		return row;
+		return rows;
 	}
 	
 	

@@ -14,6 +14,8 @@ import com.lqh.dasi.pojo.Crawler;
 import com.lqh.dasi.pojo.Teacher;
 import com.lqh.dasi.service.CrawlerService;
 
+import net.sf.json.JSONArray;
+
 /**
  * 爬虫的控制层
  * @author LiQuanhui
@@ -60,8 +62,9 @@ public class CrawlerController {
 		List<List<String>> stuInfo=ls.getStuInfo(crawler, URLConstant.QUERY_STUDENT_INFO_URL+teacher.getClassid()+"&pageSize=150");
 		crawler.close();
 		ListUtils.printArrayList(stuInfo);
+		JSONArray stuInfoJson=JSONArray.fromObject(stuInfo);
 		ModelAndView mav=new ModelAndView("stuInfo.jsp");
-		mav.addObject("stuInfo",stuInfo);
+		mav.addObject("stuInfo",stuInfoJson);
 		return mav;
 	}
 	
