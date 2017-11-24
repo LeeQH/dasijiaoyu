@@ -2,6 +2,11 @@ package com.lqh.dasi.commen;
 
 import java.util.List;
 
+/**
+ * List操作工具
+ * @author LiQuanhui
+ * @date 2017年11月24日 下午5:22:23
+ */
 public class ListUtils {
 	/**
 	 * 打印嵌套任意层数的arraylist

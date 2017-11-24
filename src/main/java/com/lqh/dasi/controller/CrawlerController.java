@@ -11,10 +11,12 @@ import org.springframework.web.servlet.ModelAndView;
 import com.lqh.dasi.commen.ListUtils;
 import com.lqh.dasi.commen.URLConstant;
 import com.lqh.dasi.pojo.Crawler;
+import com.lqh.dasi.pojo.Student;
 import com.lqh.dasi.pojo.Teacher;
 import com.lqh.dasi.service.CrawlerService;
 
 import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 /**
  * 爬虫的控制层
@@ -61,10 +63,10 @@ public class CrawlerController {
 		ls.login(crawler, teacher, URLConstant.LOGIN_URL);
 		List<List<String>> stuInfo=ls.getStuInfo(crawler, URLConstant.QUERY_STUDENT_INFO_URL+teacher.getClassid()+"&pageSize=150");
 		crawler.close();
-		ListUtils.printArrayList(stuInfo);
 		JSONArray stuInfoJson=JSONArray.fromObject(stuInfo);
 		ModelAndView mav=new ModelAndView("stuInfo.jsp");
 		mav.addObject("stuInfo",stuInfoJson);
+		mav.addObject("teacher",teacher);
 		return mav;
 	}
 	
@@ -82,7 +84,7 @@ public class CrawlerController {
 		ls.login(crawler, teacher, URLConstant.LOGIN_URL);
 		List<List<List<String>>> page=ls.getScoreRank(crawler, URLConstant.QUERY_RANK_URL+teacher.getClassid());
 		crawler.close();
-		ListUtils.printArrayList(page);
+//		ListUtils.printArrayList(page);
 		ModelAndView mav=new ModelAndView("scoreRank.jsp");
 		mav.addObject("page",page);
 		return mav;

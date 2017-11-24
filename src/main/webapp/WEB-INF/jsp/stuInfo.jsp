@@ -32,6 +32,8 @@
 		dataHead = data[0];
 		//删除表头
 		data.splice(0, 1);
+		//班级id
+		classId="${teacher.classid}";
 		//初始化select
 		init();
 		//设置iframe的高
@@ -74,7 +76,24 @@
 			return sortForChina(data, param, order);
 		}
 	}
-	
+	function exportExcel(){
+		var dataJson=[dataHead,data,classId+".xls"];
+
+		$.ajax({
+	        url: '<%=basePath%>/exportExcel/stuInfo.action',
+	        type: 'post',
+	        data: JSON.stringify(dataJson), // 以json字符串方式传递
+	        contentType:"application/json;charset=utf-8",//data类型
+	        dataType: 'text', //返回类型
+	        success: function(a) {
+	        	var url='<%=basePath%>/exportExcel/download.action?fileName='+classId+'.xls';
+	        	location.href=url;
+	        },
+	        error: function(a) {
+				alert("fail");
+	        }
+	    });
+	}
 
 </script>
 
@@ -91,6 +110,7 @@
 			<button type="button" class="btn btn-primary" onclick="goSort()">确定</button>
 			<span style="margin-left: 50px"></span>
 			<input type="text" placeholder="输入文字回车搜索" onchange="searchTable(this)">
+			<span onclick="exportExcel()">导出</span>
 		</div>
 		<br>
 		<br>

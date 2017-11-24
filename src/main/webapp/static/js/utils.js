@@ -115,7 +115,10 @@ function setIframeHeight(){
 	}
 }
 
-
+/**
+ * 对table的内容进行检索
+ * @param obj 输入框的对象
+ */
 function searchTable(obj){
     var tables = document.getElementsByTagName('table'); 
     for(var i=0;i<tables.length;i++){

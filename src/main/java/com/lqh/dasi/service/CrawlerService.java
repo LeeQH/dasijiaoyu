@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.lqh.dasi.commen.CrawlerUtils;
 import com.lqh.dasi.commen.DateUtils;
 import com.lqh.dasi.pojo.Crawler;
+import com.lqh.dasi.pojo.Student;
 import com.lqh.dasi.pojo.Teacher;
 
 
@@ -101,7 +102,35 @@ public class CrawlerService {
 		}
 		return rows;
 	}
-	
+//	public List<Student> getStuInfo(Crawler crawler,String stuInfo_src){
+//		
+//		CrawlerUtils.get(crawler, stuInfo_src);
+//		Document doc=CrawlerUtils.getDocument(crawler);
+//		
+//		List<Student> stuList=new ArrayList<Student>();
+//		Student student=null;
+//		Element table=doc.select("table#studentList").first();
+//		Elements trs=table.select("tr");
+//		Elements tds=null;
+//		for(int i=0,size=trs.size();i<size;i++){
+//			tds=trs.get(i).select("td");
+//			student=new Student();
+//			student.setStudentName(tds.get(4).text());
+//			student.setParentName(tds.get(5).text());
+//			student.setPhoneNum(tds.get(6).text());
+//			student.setStartDate(tds.get(7).text());
+//			student.setEndDate(tds.get(8).text());
+//
+//			Date now=new Date();
+//			Date end=DateUtils.stringToDate(student.getEndDate(),"yyyy-MM-dd");
+//			if(end==null)
+//				student.setRemainingDay("剩余天数");
+//			else 
+//				student.setRemainingDay(DateUtils.differentDays(now, end));
+//			stuList.add(student);
+//		}
+//		return stuList;
+//	}	
 	
 	public List<List<List<String>>> getScoreRank(Crawler crawler,String scoreRank_src){
 		CrawlerUtils.get(crawler, scoreRank_src);
