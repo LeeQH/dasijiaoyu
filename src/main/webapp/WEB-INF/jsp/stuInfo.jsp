@@ -22,6 +22,7 @@
 <script src="<%=basePath%>/static/js/utils.js" type="text/javascript"></script>
 
 <link href="<%=basePath%>/static/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+<link href="<%=basePath%>/static/css/mycss.css" rel="stylesheet" type="text/css" />
 
 <script type="text/javascript">
 	$(function() {
@@ -33,6 +34,8 @@
 		data.splice(0, 1);
 		//初始化select
 		init();
+		//设置iframe的高
+		setIframeHeight();
 	});
 
 	function init() {
@@ -78,22 +81,24 @@
 
 </head>
 <body>
-	<br>
-	<div class="form-inline">
-		<select class="form-control" id="sortType"></select>
-		<select class="form-control" id="sortMethod">
-			<option value="asc">升序</option>
-			<option value="desc">降序</option>
-		</select>
-		<button type="button" class="btn btn-primary" onclick="goSort()">确定</button>
+	<div>
+		<div class="form-inline navbar-fixed-top">
+			<select class="form-control" id="sortType"></select>
+			<select class="form-control" id="sortMethod">
+				<option value="asc">升序</option>
+				<option value="desc">降序</option>
+			</select>
+			<button type="button" class="btn btn-primary" onclick="goSort()">确定</button>
+			<span style="margin-left: 50px"></span>
+			<input type="text" placeholder="输入文字回车搜索" onchange="searchTable(this)">
+		</div>
+		<br>
+		<br>
+		<table style="margin-left: 10px;" class="table table-hover" id="default">
+			<thead id="head"></thead>
+			<tbody id="body"></tbody>
+		</table>
 	</div>
-	<br>
-	<br>
-	<table class="table table-hover" id="default">
-		<thead id="head"></thead>
-		<tbody id="body"></tbody>
-	</table>
-
 </body>
 
 </html>

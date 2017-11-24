@@ -105,3 +105,33 @@ function sortForDate(data, param, order) {
 	});
 	return data;
 }
+
+/**
+ * 设置外层iframe的高大于内容的高
+ */
+function setIframeHeight(){
+	if(window.parent != window){
+		parent.document.getElementById("iframe").style.height = (document.body.scrollHeight+30)+"px";
+	}
+}
+
+
+function searchTable(obj){
+    var tables = document.getElementsByTagName('table'); 
+    for(var i=0;i<tables.length;i++){
+    	 var rowsLength = tables[i].rows.length;//表格总共有多少行  
+         var key = obj.value;//获取输入框的值  
+         for(var j=1;j<rowsLength;j++){//先全部隐藏
+        	 tables[i].rows[j].style.display='none';  
+         }
+         for(var j=1;j<rowsLength;j++){//按表的行数进行循环，第一行是标题，所以i=1，从第二行开始筛选（从0数起）  
+             colsLength=tables[i].rows[j].cells.length;//单元格子数目
+        	 for(var k=0;k<colsLength;k++){  
+            	 var searchText = tables[i].rows[j].cells[k].innerHTML;//取得table行，列的值  
+                 if(searchText.match(key)){//用match函数进行筛选（返回匹配的值，否则为null），if有内容 或不为空返回true 
+                	 tables[i].rows[j].style.display='';//显示行操作，  
+                 }
+        	 }
+         }  
+    }
+}
