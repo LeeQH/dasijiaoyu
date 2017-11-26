@@ -22,7 +22,7 @@ import net.sf.json.JSONArray;
  * @author LiQuanhui
  * @date 2017年11月24日 下午5:21:50
  */
-@Deprecated
+@Deprecated 
 public class ExcelUtils {
 
 	/**
@@ -36,33 +36,36 @@ public class ExcelUtils {
 	public static HSSFWorkbook expExcel(JSONArray head, JSONArray body) {
 		HSSFWorkbook workbook = new HSSFWorkbook();
 		HSSFSheet sheet = workbook.createSheet("学生信息");
-
+		
 		HSSFRow row = sheet.createRow(0);
 		HSSFCell cell = null;
+		
+		HSSFCellStyle cellStyle = workbook.createCellStyle();
+		setBorderStyle(cellStyle, BorderStyle.THIN);
+		cellStyle.setFont(setFontStyle(workbook, "黑体", (short) 14));
+		cellStyle.setAlignment(HorizontalAlignment.CENTER);
+		
 		for (int i = 0; i < head.size(); i++) {
 			cell = row.createCell(i);
 			cell.setCellValue(head.getString(i));
-
-			HSSFCellStyle cellStyle = workbook.createCellStyle();
-			setBorderStyle(cellStyle, BorderStyle.THIN);
-			cellStyle.setFont(setFontStyle(workbook, "黑体", (short) 13));
-			cellStyle.setAlignment(HorizontalAlignment.CENTER);
 			cell.setCellStyle(cellStyle);
 		}
-
+		
+		HSSFCellStyle cellStyle2 = workbook.createCellStyle();
+		setBorderStyle(cellStyle2, BorderStyle.THIN);
+		cellStyle2.setFont(setFontStyle(workbook, "宋体", (short) 12));
+		cellStyle2.setAlignment(HorizontalAlignment.CENTER);
 		for (int i = 0, isize = body.size(); i < isize; i++) {
 			row = sheet.createRow(i + 1);
 			JSONArray stuInfo = body.getJSONArray(i);
 			for (int j = 0, jsize = stuInfo.size(); j < jsize; j++) {
 				cell = row.createCell(j);
 				cell.setCellValue(stuInfo.getString(j));
-
-				HSSFCellStyle cellStyle = workbook.createCellStyle();
-				setBorderStyle(cellStyle, BorderStyle.THIN);
-				cellStyle.setFont(setFontStyle(workbook, "宋体", (short) 12));
-				cellStyle.setAlignment(HorizontalAlignment.CENTER);
-				cell.setCellStyle(cellStyle);
+				cell.setCellStyle(cellStyle2);
 			}
+		}
+		for (int i = 0, isize = head.size(); i < isize; i++) {
+			sheet.autoSizeColumn(i); 
 		}
 		return workbook;
 	}
@@ -106,8 +109,8 @@ public class ExcelUtils {
 	 */
 	private static HSSFFont setFontStyle(HSSFWorkbook workbook, String name, short height) {
 		HSSFFont font = workbook.createFont();
-		font.setFontHeightInPoints((short) 12);
-		font.setFontName("黑体");
+		font.setFontHeightInPoints(height);
+		font.setFontName(name);
 		return font;
 	}
 

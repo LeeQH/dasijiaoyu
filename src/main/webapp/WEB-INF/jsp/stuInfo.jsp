@@ -102,6 +102,7 @@
 <body>
 	<div>
 		<div class="form-inline navbar-fixed-top">
+			<span style="margin-left: 50px"></span>
 			<select class="form-control" id="sortType"></select>
 			<select class="form-control" id="sortMethod">
 				<option value="asc">升序</option>
@@ -110,7 +111,7 @@
 			<button type="button" class="btn btn-primary" onclick="goSort()">确定</button>
 			<span style="margin-left: 50px"></span>
 			<input type="text" placeholder="输入文字回车搜索" onchange="searchTable(this)">
-			<span onclick="exportExcel()">导出</span>
+			<button class="btn btn-primary"  type="button" style="float: right;" onclick="exportExcel()">导出</button>
 		</div>
 		<br>
 		<br>
