@@ -1,5 +1,6 @@
 package com.lqh.dasi.controller;
 
+import java.security.Security;
 import java.util.List;
 import java.util.Map;
 
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.lqh.dasi.commen.ListUtils;
+import com.lqh.dasi.commen.SecurityAES;
 import com.lqh.dasi.commen.URLConstant;
 import com.lqh.dasi.pojo.Crawler;
 import com.lqh.dasi.pojo.Student;
@@ -39,12 +41,12 @@ public class CrawlerController {
 	 */
 	@RequestMapping("/login.action")
 	public ModelAndView login(Teacher teacher){
-		System.out.println(teacher.toString());
 		Crawler crawler=new Crawler();
 		ls.login(crawler, teacher, URLConstant.LOGIN_URL);
 		Map<String,String> classids=ls.getClassId(crawler, URLConstant.QUERY_CLASS_URL);
 		crawler.close();
 		ModelAndView mav=new ModelAndView("index.jsp");
+		encrypt(teacher);//加密传前端，防止账号密码泄露
 		mav.addObject("teacher", teacher);
 		mav.addObject("classids",classids);
 		return mav;
@@ -59,6 +61,7 @@ public class CrawlerController {
 	 */
 	@RequestMapping("/stuInfo.action")
 	public ModelAndView queryStuInfo(Teacher teacher){
+		decrypt(teacher);//解密获取到账号密码
 		Crawler crawler=new Crawler();
 		ls.login(crawler, teacher, URLConstant.LOGIN_URL);
 		List<List<String>> stuInfo=ls.getStuInfo(crawler, URLConstant.QUERY_STUDENT_INFO_URL+teacher.getClassid()+"&pageSize=150");
@@ -79,7 +82,7 @@ public class CrawlerController {
 	 */
 	@RequestMapping("/scoreRank.action")
 	public ModelAndView getScoreRank(Teacher teacher){
-		System.out.println(teacher.toString());
+		decrypt(teacher);//解密获取到账号密码
 		Crawler crawler=new Crawler();
 		ls.login(crawler, teacher, URLConstant.LOGIN_URL);
 		List<List<List<String>>> page=ls.getScoreRank(crawler, URLConstant.QUERY_RANK_URL+teacher.getClassid());
@@ -88,5 +91,31 @@ public class CrawlerController {
 		ModelAndView mav=new ModelAndView("scoreRank.jsp");
 		mav.addObject("page",page);
 		return mav;
+	}
+	
+	/**
+	 * 对teacher的loginId与password进行加密
+	 * @author LiQuanhui
+	 * @date 2017年11月27日 下午5:56:31
+	 * @param teacher
+	 */
+	private void encrypt(Teacher teacher){
+		String loginIdAES=SecurityAES.encrypt(teacher.getLoginId());
+		String passwordAES=SecurityAES.encrypt(teacher.getPassword());
+		teacher.setLoginId(loginIdAES);
+		teacher.setPassword(passwordAES);
+	}
+	
+	/**
+	 * 对teacher的loginId与password进行解密
+	 * @author LiQuanhui
+	 * @date 2017年11月27日 下午5:56:55
+	 * @param teacher
+	 */
+	private void decrypt(Teacher teacher){
+		String loginIdAES=SecurityAES.decrypt(teacher.getLoginId());
+		String passwordAES=SecurityAES.decrypt(teacher.getPassword());
+		teacher.setLoginId(loginIdAES);
+		teacher.setPassword(passwordAES);
 	}
 }
