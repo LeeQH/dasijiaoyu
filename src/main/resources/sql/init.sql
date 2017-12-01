@@ -26,3 +26,4 @@ CREATE TABLE `STU_INFO`(
  `last_date` TIMESTAMP COMMENT '最后一次上线时间',
  PRIMARY KEY (`id`)
 )
+1
