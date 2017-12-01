@@ -50,7 +50,12 @@ public class CrawlerUtils {
 		}
 		try {
 			CloseableHttpResponse httpResponse=crawler.getHttpClient().execute(httpPost,crawler.getContext());
-			crawler.setHttpResponse(httpResponse);
+			if(httpResponse.getStatusLine().getStatusCode()==200){
+				crawler.setHttpResponse(httpResponse);
+				crawler.setPass(true);
+			}else {
+				crawler.setPass(false);
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -69,7 +74,12 @@ public class CrawlerUtils {
 		HttpGet httpGet=new HttpGet(get_url);
 		try {
 			CloseableHttpResponse httpResponse=crawler.getHttpClient().execute(httpGet,crawler.getContext());
-			crawler.setHttpResponse(httpResponse);
+			if(httpResponse.getStatusLine().getStatusCode()==200){
+				crawler.setHttpResponse(httpResponse);
+				crawler.setPass(true);
+			}else {
+				crawler.setPass(false);
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

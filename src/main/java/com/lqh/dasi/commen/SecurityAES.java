@@ -4,7 +4,6 @@ import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.sql.Date;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -23,13 +22,11 @@ import javax.enterprise.inject.New;
  */
 public class SecurityAES {
 	/** AES加密时的秘钥 */
-	private final static String AES_KEY = "mykeyismylove";
+	private final static String AES_KEY = "this_is_my_key";
 	/** AES专用秘钥 */
 	private static SecretKeySpec key = null;
 
-	/**
-	 * key因为在没改变AES_KEY时是不变的，所以进行一次初始化操作
-	 */
+	/** key因为在没改变AES_KEY时是不变的，所以进行一次初始化操作 */
 	static {
 		// 创建AES的秘钥生成器
 		KeyGenerator kgen = null;
@@ -68,8 +65,8 @@ public class SecurityAES {
 			// 进行AES加密
 			byte[] result = cipher.doFinal(byteContent);
 			// 将byte数组转为十六进制的字符串
-			// 因为AES加密算法中，密文是16位的倍数，直接new string(result)会乱码，不能进行传输
-			// 但可以在后台中以byte[]的形式传递，因为我要进行前后端的传输所以转成16进制的字符串
+			// 因为result存储的是字节，直接new string(result)会按照ASCII表输出，这会导致查看乱码
+			// 因为我要进行前后端的传输，所以这样传给前端，前端不能识别，于是对byte进行转码成16进制的字符串
 			return parseByte2HexStr(result);
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
@@ -141,7 +138,7 @@ public class SecurityAES {
 	}
 
 	/**
-	 * 将16进制的字符串转换为二进制 数组
+	 * 将16进制的字符串转换为byte数组
 	 * 
 	 * @param hexStr
 	 * @return
@@ -150,29 +147,26 @@ public class SecurityAES {
 		if (hexStr.length() < 1)
 			return null;
 		byte[] result = new byte[hexStr.length() / 2];
-		for (int i = 0; i < hexStr.length() / 2; i++) {
-			int high = Integer.parseInt(hexStr.substring(i * 2, i * 2 + 1), 16);
-			int low = Integer.parseInt(hexStr.substring(i * 2 + 1, i * 2 + 2), 16);
-			result[i] = (byte) (high * 16 + low);
+		for (int i = 0, size = hexStr.length() / 2; i < size; i++) {
+			//每次获取16进制S字符串中的两个转成10进制(0-255)
+			int num = Integer.parseInt(hexStr.substring(i * 2, i * 2 + 2), 16);
+			//将10进制强转为byte
+			result[i] = (byte) num;
 		}
 		return result;
 	}
 
 	// 测试
 	public static void main(String[] args) throws Exception {
+		String content = "123456789012345";
+		// 加密
+		System.out.println("加密前：" + content);
+		String encryptResult = encrypt(content);
+		System.out.println("加密后：" + encryptResult);
+		// 解密
+		String decryptResult = decrypt(encryptResult);
+		System.out.println("解密后：" + decryptResult);
 
-		long now = System.currentTimeMillis();
-		for (int i = 0; i < 1; i++) {
-			String content = "123";
-			// 加密
-			System.out.println("加密前：" + content);
-			String encryptResult = encrypt(content);
-			System.out.println("加密后：" + encryptResult);
-			// 解密
-			String decryptResult = decrypt(encryptResult);
-			System.out.println("解密后：" + decryptResult);
-		}
-		System.out.println("SecurityAES.java\t" + (System.currentTimeMillis() - now));
 	}
 
 }

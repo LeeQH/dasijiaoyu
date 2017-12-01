@@ -96,15 +96,11 @@ public class ExcelUtils {
 
 	/**
 	 * 设置字体样式
-	 * 
 	 * @author LiQuanhui
 	 * @date 2017年11月24日 下午3:27:03
-	 * @param workbook
-	 *            工作簿
-	 * @param name
-	 *            字体类型
-	 * @param height
-	 *            字体大小
+	 * @param workbook 工作簿
+	 * @param name 字体类型
+	 * @param height 字体大小
 	 * @return HSSFFont
 	 */
 	private static HSSFFont setFontStyle(HSSFWorkbook workbook, String name, short height) {
@@ -119,10 +115,8 @@ public class ExcelUtils {
 	 * 
 	 * @author LiQuanhui
 	 * @date 2017年11月24日 下午3:26:24
-	 * @param workbook
-	 *            工作簿
-	 * @param border
-	 *            border样式
+	 * @param workbook 工作簿
+	 * @param border border样式
 	 */
 	private static void setBorderStyle(HSSFCellStyle cellStyle, BorderStyle border) {
 		cellStyle.setBorderBottom(border); // 下边框

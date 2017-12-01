@@ -61,5 +61,5 @@
 	</c:forEach>
 </div>
 </body>
-
+<jsp:include page="/WEB-INF/jsp/alert.jsp"></jsp:include>
 </html>

@@ -9,8 +9,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <head>
 
 <script type="text/javascript">
-function queryInfo(type,classid){
+function queryInfo(type,classid,classname){
 	document.getElementById("classid").value=classid;
+	document.getElementById("classname").value=classname;
 	var form=document.getElementById("from");
 	form.action="<%=basePath%>/crawler/"+type;
 	form.submit();
@@ -35,8 +36,8 @@ function queryInfo(type,classid){
 					<div id="collapse${status.count}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading${status.count}">
 						<div class="panel-body">
 							<div class="list-group">
-							  <button type="button" class="list-group-item" onclick="queryInfo('stuInfo.action','${entry.value}')">学生信息</button>
-							  <button type="button" class="list-group-item" onclick="queryInfo('scoreRank.action','${entry.value}')">成绩排名</button>
+							  <button type="button" class="list-group-item" onclick="queryInfo('stuInfo.action','${entry.value}','${entry.key}')">学生信息</button>
+							  <button type="button" class="list-group-item" onclick="queryInfo('scoreRank.action','${entry.value}','${entry.key}')">成绩排名</button>
 							</div>
 						</div>
 					</div>
@@ -47,6 +48,7 @@ function queryInfo(type,classid){
 			<input type="hidden" name="loginId" value="${teacher.loginId}" /> 
 			<input type="hidden" name="password" value="${teacher.password}" /> 
 			<input type="hidden" id="classid" name="classid" /> 
+			<input type="hidden" id="classname" /> 
 		</form>
 	</nav>
 </div>

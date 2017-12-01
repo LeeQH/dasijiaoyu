@@ -20,11 +20,15 @@
 <script src="<%=basePath%>/static/js/jquery-3.1.1.min.js" type="text/javascript"></script>
 <script src="<%=basePath%>/static/js/bootstrap.min.js" type="text/javascript"></script>
 <script src="<%=basePath%>/static/js/utils.js" type="text/javascript"></script>
+<script src="<%=basePath%>/static/js/FileSaver.min.js" type="text/javascript"></script>
+<script src="<%=basePath%>/static/js/xlsx.core.min.js" type="text/javascript"></script>
+<script src="<%=basePath%>/static/js/tableExport.js" type="text/javascript"></script>
 
 <link href="<%=basePath%>/static/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
 <link href="<%=basePath%>/static/css/mycss.css" rel="stylesheet" type="text/css" />
 
 <script type="text/javascript">
+	
 	$(function() {
 		//获取二维数组
 		data = ${stuInfo};
@@ -33,7 +37,9 @@
 		//删除表头
 		data.splice(0, 1);
 		//班级id
-		classId="${teacher.classid}";
+		classId=window.parent.document.getElementById("classid").value;
+		//班级名称
+		className=window.parent.document.getElementById("classname").value;
 		//初始化select
 		init();
 		//设置iframe的高
@@ -76,9 +82,9 @@
 			return sortForChina(data, param, order);
 		}
 	}
-	function exportExcel(){
+	
+	function exportExcelWithJAVA(){
 		var dataJson=[dataHead,data,classId+".xls"];
-
 		$.ajax({
 	        url: '<%=basePath%>/exportExcel/stuInfo.action',
 	        type: 'post',
@@ -94,9 +100,18 @@
 	        }
 	    });
 	}
-
+	
+	function exportExcelWithJS(){
+		$('#default').tableExport({
+        	type:'excel',
+        	fileName:className,//文件名
+        	worksheetName:'学生信息',//sheet表的名字
+//         	ignoreColumn:[],//忽略的列，从0开始
+//         	ignoreRow:[],//忽略的行，从0开始
+        	excelstyles:['text-align']//使用样式，不用填值只写属性，值读取的是html中的
+        });
+	}
 </script>
-
 
 </head>
 <body>
@@ -111,7 +126,10 @@
 			<button type="button" class="btn btn-primary" onclick="goSort()">确定</button>
 			<span style="margin-left: 50px"></span>
 			<input type="text" placeholder="输入文字回车搜索" onchange="searchTable(this)">
-			<button class="btn btn-primary"  type="button" style="float: right;" onclick="exportExcel()">导出</button>
+			<!-- java导出 -->
+			<button class="btn btn-primary" type="button" style="float: right;" onclick="exportExcelWithJAVA()">导出</button>
+			<!-- js导出 （释放服务器性能） -->
+			<button class="btn btn-primary"  type="button" style="float: right;" onclick="exportExcelWithJS()">下载本表格</button>
 		</div>
 		<br>
 		<br>
@@ -121,5 +139,5 @@
 		</table>
 	</div>
 </body>
-
+<jsp:include page="/WEB-INF/jsp/alert.jsp"></jsp:include>
 </html>

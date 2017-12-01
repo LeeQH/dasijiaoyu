@@ -36,7 +36,6 @@ public class CrawlerService {
 		parem.put("password", teacher.getPassword());
 		//发送post请求
 		CrawlerUtils.post(crawler, parem, login_src);
-	
         return crawler;
 	}
 	
@@ -51,6 +50,9 @@ public class CrawlerService {
 	public Map<String,String> getClassId(Crawler crawler,String class_src){
 		Map<String,String> map=new HashMap<String,String>();
 		CrawlerUtils.get(crawler, class_src);
+		if(crawler==null)
+			return null;
+		
 		Document doc=CrawlerUtils.getDocument(crawler);
 		Element table=doc.getElementById("MyList");
 		Elements trs=table.select("tr");
@@ -74,10 +76,11 @@ public class CrawlerService {
 	 * @return List<List<String>>
 	 */
 	public List<List<String>> getStuInfo(Crawler crawler,String stuInfo_src){
-	
 		CrawlerUtils.get(crawler, stuInfo_src);
-		Document doc=CrawlerUtils.getDocument(crawler);
+		if(crawler==null)
+			return null;
 		
+		Document doc=CrawlerUtils.getDocument(crawler);
 		List<String> cols=null;
 		List<List<String>> rows=new ArrayList<List<String>>();
 		
@@ -134,6 +137,8 @@ public class CrawlerService {
 	
 	public List<List<List<String>>> getScoreRank(Crawler crawler,String scoreRank_src){
 		CrawlerUtils.get(crawler, scoreRank_src);
+		if(crawler==null)
+			return null;
 		Document doc=CrawlerUtils.getDocument(crawler);
 		
 		List<String> col=null;

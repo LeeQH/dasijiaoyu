@@ -21,50 +21,49 @@ public class Crawler {
 	private CookieStore cookieStore;
 	private RequestConfig requestConfig;
 	private CloseableHttpResponse httpResponse;
-	
-	public Crawler(){
+	private boolean pass;
+
+	public Crawler() {
 		init();
 	}
-	
-	public Crawler init(){
+
+	public Crawler init() {
 		context = HttpClientContext.create();
 		cookieStore = new BasicCookieStore();
 		// 配置超时时间（连接服务端超时1秒，请求数据返回超时2秒）
-		requestConfig = RequestConfig.custom()
-				.setConnectTimeout(120000)
-				.setSocketTimeout(60000)
-				.setConnectionRequestTimeout(60000)
-				.build();
+		requestConfig = RequestConfig.custom().setConnectTimeout(120000).setSocketTimeout(60000)
+				.setConnectionRequestTimeout(60000).build();
 		// 设置默认跳转以及存储cookie
-		httpClient = HttpClientBuilder.create()
-				.setKeepAliveStrategy(new DefaultConnectionKeepAliveStrategy())
-				.setRedirectStrategy(new DefaultRedirectStrategy())
-				.setDefaultRequestConfig(requestConfig)
+		httpClient = HttpClientBuilder.create().setKeepAliveStrategy(new DefaultConnectionKeepAliveStrategy())
+				.setRedirectStrategy(new DefaultRedirectStrategy()).setDefaultRequestConfig(requestConfig)
 				.setDefaultCookieStore(cookieStore).build();
+		pass = false;
 		return this;
 	}
-	
-	public void close(){
+
+	public void close() {
 		try {
-			httpClient.close();
-			httpResponse.close();
+			if(httpClient!=null)
+				httpClient.close();
+			if(httpResponse!=null)
+				httpResponse.close();
 		} catch (IOException e) {
 			e.printStackTrace();
-		}		
+		}
 	}
 
 	@Override
 	public String toString() {
-		StringBuffer sb=new StringBuffer();
-		sb.append("\n-------------COOKIE-------------"+"\n");
-		Cookie cookie=cookieStore.getCookies().get(0);
-		sb.append("cookieName:"+cookie.getName()+"\n");
-		sb.append("cookieValue:"+cookie.getValue()+"\n");
-		sb.append("domain:"+cookie.getDomain()+"\n");
-		sb.append("path:"+cookie.getPath()+"\n");
-		
-		sb.append("\n------------RESPONSE------------"+"\n");
-		sb.append("state:"+httpResponse.getStatusLine().getStatusCode()+"\n");
+		StringBuffer sb = new StringBuffer();
+		sb.append("\n-------------COOKIE-------------" + "\n");
+		Cookie cookie = cookieStore.getCookies().get(0);
+		sb.append("cookieName:" + cookie.getName() + "\n");
+		sb.append("cookieValue:" + cookie.getValue() + "\n");
+		sb.append("domain:" + cookie.getDomain() + "\n");
+		sb.append("path:" + cookie.getPath() + "\n");
+
+		sb.append("\n------------RESPONSE------------" + "\n");
+		sb.append("state:" + httpResponse.getStatusLine().getStatusCode() + "\n");
 		try {
 			sb.append(EntityUtils.toString(httpResponse.getEntity(), "UTF-8"));
 		} catch (ParseException e) {
@@ -72,7 +71,7 @@ public class Crawler {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		return sb.toString();
 	}
 
@@ -87,27 +86,41 @@ public class Crawler {
 	public CloseableHttpClient getHttpClient() {
 		return httpClient;
 	}
+
 	public void setHttpClient(CloseableHttpClient httpClient) {
 		this.httpClient = httpClient;
 	}
+
 	public HttpClientContext getContext() {
 		return context;
 	}
+
 	public void setContext(HttpClientContext context) {
 		this.context = context;
 	}
+
 	public CookieStore getCookieStore() {
 		return cookieStore;
 	}
+
 	public void setCookieStore(CookieStore cookieStore) {
 		this.cookieStore = cookieStore;
 	}
+
 	public RequestConfig getRequestConfig() {
 		return requestConfig;
 	}
+
 	public void setRequestConfig(RequestConfig requestConfig) {
 		this.requestConfig = requestConfig;
 	}
-	
-	
+
+	public boolean isPass() {
+		return pass;
+	}
+
+	public void setPass(boolean pass) {
+		this.pass = pass;
+	}
+
 }
