@@ -93,9 +93,10 @@ public class CrawlerController {
 			List<StuInfo> stuInfo = CrawlerHandle.getStuInfo(crawler,
 					URLConstant.QUERY_STUDENT_INFO_URL + classid + "&pageSize=150",classid);
 			if (stuInfo!=null) {
-				logger.info(teacherInfo.getLoginName()+"爬虫学生信息成功");
-				ListUtils.printArrayList(stuInfo);
+				logger.info(teacherInfo.getLoginName()+"爬虫学生信息成功，共"+stuInfo.size()+"条");
+//				ListUtils.printArrayList(stuInfo);
 //				先查数据库，通过stu_id比对，以爬的为标准，库少插库多删，都有的更新
+				baseService.updateStudents(stuInfo);
 //				JSONArray stuInfoJson = JSONArray.fromObject(stuInfo);
 				mav.addObject("alertInfo", "更新学生信息完成");
 			} else {

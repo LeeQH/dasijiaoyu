@@ -10,14 +10,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
 <script type="text/javascript">
 function queryInfo(path,classid,classname){
-	document.getElementById("classid").value=classid;
+	document.getElementById("queryClassid").value=classid;
 	document.getElementById("classname").value=classname;
 	var form=document.getElementById("query");
 	form.action="<%=basePath%>"+path;
 	form.submit();
 }
 function updateInfo(path,classid){
-	document.getElementById("classid").value=classid;
+	document.getElementById("updateClassid").value=classid;
 	var form=document.getElementById("update");
 	form.action="<%=basePath%>"+path;
 	form.submit();
@@ -72,14 +72,14 @@ function updateInfo(path,classid){
 			<input type="hidden" name="id" value="${teacherInfo.id}" /> 
 			<input type="hidden" name="loginName" value="${teacherInfo.loginName}" /> 
 			<input type="hidden" name="loginPwd" value="${teacherInfo.loginPwd}" /> 
-			<input type="hidden" id="classid" name="classid" /> 
+			<input type="hidden" id="queryClassid" name="classid" /> 
 			<input type="hidden" id="classname" /> 
 		</form>
 		<form id="update" action="" method="post">
 			<input type="hidden" name="id" value="${teacherInfo.id}" /> 
 			<input type="hidden" name="loginName" value="${teacherInfo.loginName}" /> 
 			<input type="hidden" name="loginPwd" value="${teacherInfo.loginPwd}" /> 
-			<input type="hidden" id="classid" name="classid" /> 
+			<input type="hidden" id="updateClassid" name="classid" /> 
 		</form>
 	</nav>
 </div>

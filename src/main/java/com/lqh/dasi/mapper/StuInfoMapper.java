@@ -27,4 +27,12 @@ public interface StuInfoMapper {
     int updateByPrimaryKeySelective(StuInfo record);
 
     int updateByPrimaryKey(StuInfo record);
+    
+    //批量插入
+    int insertBatch(List<StuInfo> record);
+    //批量插入
+    int deleteBatch(List<StuInfo> record);
+    //批量更新
+    int updateBatch(List<StuInfo> record);
+    
 }

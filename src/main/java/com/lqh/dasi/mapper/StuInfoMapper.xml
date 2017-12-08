@@ -272,4 +272,70 @@
       class_id = #{classId,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  
+  
+  
+  
+  
+  
+  <insert id="insertBatch" parameterType="java.util.List">  
+    insert into stu_info (id, stu_id, stu_name, par_name, tel_num, start_date, 
+      end_date, last_date, class_id)
+    values 
+    <foreach collection="list" item="item" index="index" separator="," >  
+        (#{item.id,jdbcType=INTEGER}, #{item.stuId,jdbcType=VARCHAR}, #{item.stuName,jdbcType=VARCHAR}, 
+      #{item.parName,jdbcType=VARCHAR}, #{item.telNum,jdbcType=VARCHAR}, #{item.startDate,jdbcType=DATE}, 
+      #{item.endDate,jdbcType=DATE}, #{item.lastDate,jdbcType=DATE}, #{item.classId,jdbcType=VARCHAR}
+      ) 
+    </foreach>  
+  </insert>
+  
+  <delete id="deleteBatch" parameterType="java.util.List" >
+    delete from stu_info
+    where id in 
+    <foreach collection="list" item="item" index="index" open="(" separator="," close=")">  
+      #{item.id,jdbcType=INTEGER}
+    </foreach>
+  </delete>
+  
+  <update id="updateBatch" parameterType="java.util.List" >
+    update stu_info
+    set 
+      stu_id = 
+      <foreach collection="list" item="item" index="index" open="case id " separator=" " close="end,"> 
+        when #{item.id,jdbcType=INTEGER} then #{item.stuId,jdbcType=VARCHAR}
+      </foreach>
+      stu_name = 
+      <foreach collection="list" item="item" index="index" open="case id " separator=" " close="end,"> 
+        when #{item.id,jdbcType=INTEGER} then #{item.stuName,jdbcType=VARCHAR}
+      </foreach>
+      par_name = 
+      <foreach collection="list" item="item" index="index" open="case id " separator=" " close="end,"> 
+        when #{item.id,jdbcType=INTEGER} then #{item.parName,jdbcType=VARCHAR}
+      </foreach>
+      tel_num = 
+      <foreach collection="list" item="item" index="index" open="case id " separator=" " close="end,"> 
+        when #{item.id,jdbcType=INTEGER} then #{item.telNum,jdbcType=VARCHAR}
+      </foreach>
+      start_date = 
+      <foreach collection="list" item="item" index="index" open="case id " separator=" " close="end,"> 
+        when #{item.id,jdbcType=INTEGER} then #{item.startDate,jdbcType=DATE}
+      </foreach>
+      end_date = 
+      <foreach collection="list" item="item" index="index" open="case id " separator=" " close="end,"> 
+        when #{item.id,jdbcType=INTEGER} then #{item.endDate,jdbcType=DATE}
+      </foreach>
+      last_date = 
+      <foreach collection="list" item="item" index="index" open="case id " separator=" " close="end,"> 
+        when #{item.id,jdbcType=INTEGER} then #{item.lastDate,jdbcType=DATE}
+      </foreach>
+      class_id = 
+      <foreach collection="list" item="item" index="index" open="case id " separator=" " close="end"> 
+        when #{item.id,jdbcType=INTEGER} then #{item.classId,jdbcType=VARCHAR}
+      </foreach>
+    where id in 
+    <foreach collection="list" item="item" index="index" open="(" separator="," close=")"> 
+        #{item.id,jdbcType=INTEGER}
+     </foreach>
+  </update>
 </mapper>

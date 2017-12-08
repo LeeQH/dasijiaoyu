@@ -83,15 +83,6 @@ public class CrawlerHandle {
 		CrawlerUtils.get(crawler, stuInfo_src);
 		if(crawler==null)
 			return null;
-		try {
-			HttpEntity entity=crawler.getHttpResponse().getEntity();
-			String webcontext=EntityUtils.toString(entity, "UTF-8");
-			System.out.println("entity.getContentLength():"+entity.getContentLength());
-			System.out.println("webcontext.length():"+webcontext.length());
-			System.out.println(webcontext);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 		
 		StuInfo stuInfo=null;
 		List<StuInfo> stuList=new ArrayList<StuInfo>();
@@ -101,7 +92,7 @@ public class CrawlerHandle {
 		Elements tds=null;
 		
 		
-		for(int i=0,size=trs.size();i<size;i++){
+		for(int i=1,size=trs.size();i<size;i++){
 			stuInfo=new StuInfo();
 			tds=trs.get(i).select("td");
 //			"<input type=\"checkbox\" name=\"studentList_selector_selectcheckbox\" value=\"9bf11485faa54aeab0e6e0582a17f043\" onclick=\"selectorClick(this,'studentBean.id')\">"

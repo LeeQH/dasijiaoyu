@@ -16,15 +16,18 @@ public class ListUtils {
 	 */
 	@SuppressWarnings("rawtypes")
 	public static <T extends List> void printArrayList(T list){
-		if(list.get(0) instanceof List){
-			for(int i=0,size=list.size();i<size;i++){
-				printArrayList((List)list.get(i));
+		if(list!=null&&list.size()!=0){
+			if(list.get(0) instanceof List){
+				for(int i=0,size=list.size();i<size;i++){
+					printArrayList((List)list.get(i));
+				}
+			}else{
+				for(int i=0,size=list.size();i<size;i++){
+					System.out.println(list.get(i).toString());
+				}
 			}
 		}else{
-			for(int i=0,size=list.size();i<size;i++){
-				System.out.print(list.get(i).toString()+"\t");
-			}
-			System.out.println();
+			System.out.println("无数据");
 		}
 	}
 }

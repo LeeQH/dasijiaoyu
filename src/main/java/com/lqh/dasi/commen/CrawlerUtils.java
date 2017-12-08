@@ -40,7 +40,6 @@ public class CrawlerUtils {
 		HttpPost httpPost=new HttpPost(post_url);
 		if(param!=null){
 			try {
-				httpPost.setHeader("Accept-Encoding", "identity");  
 				httpPost.setEntity(new UrlEncodedFormEntity(setPostParam(param),"UTF-8"));
 			} catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
@@ -71,7 +70,6 @@ public class CrawlerUtils {
 	 */
 	public static Crawler get(Crawler crawler,String get_url){
 		HttpGet httpGet=new HttpGet(get_url);
-		httpGet.setHeader("Accept-Encoding", "identity"); 
 		try {
 			CloseableHttpResponse httpResponse=crawler.getHttpClient().execute(httpGet,crawler.getContext());
 			if(httpResponse.getStatusLine().getStatusCode()==200){
@@ -110,6 +108,7 @@ public class CrawlerUtils {
 		Document doc=null;
 		try {
 			String html = EntityUtils.toString(crawler.getHttpResponse().getEntity(), "UTF-8");
+//			System.out.println(html);
 			doc = Jsoup.parse(html);
 		} catch (ParseException e) {
 			e.printStackTrace();
