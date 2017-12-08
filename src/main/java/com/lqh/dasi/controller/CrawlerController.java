@@ -1,166 +1,174 @@
 package com.lqh.dasi.controller;
 
-import java.security.Security;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.lqh.dasi.commen.CrawlerHandle;
 import com.lqh.dasi.commen.ListUtils;
 import com.lqh.dasi.commen.SecurityAES;
 import com.lqh.dasi.commen.URLConstant;
 import com.lqh.dasi.pojo.Crawler;
-import com.lqh.dasi.pojo.Student;
-import com.lqh.dasi.pojo.Teacher;
-import com.lqh.dasi.service.CrawlerService;
-
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
+import com.lqh.dasi.pojo.StuInfo;
+import com.lqh.dasi.pojo.TeacherInfo;
+import com.lqh.dasi.service.BaseService;
 
 /**
- * 爬虫的控制层
- * 
+ * 业务爬虫的控制层
  * @author LiQuanhui
  * @date 2017年11月17日 下午5:07:50
  */
 @Controller
 @RequestMapping("/crawler")
 public class CrawlerController {
-
+	private static Logger logger = Logger.getLogger(CrawlerController.class);	
+	
 	@Autowired
-	public CrawlerService ls;
-
+	public BaseService baseService;	
+	
 	/**
-	 * 登录
-	 * 
+	 * 更新班级列表
 	 * @author LiQuanhui
-	 * @date 2017年11月17日 下午5:08:11
-	 * @param teacher
-	 *            教师类
-	 * @return 返回到index.jsp
-	 */
-	@RequestMapping("/login.action")
-	public ModelAndView login(Teacher teacher) {
-		ModelAndView mav = new ModelAndView();
-		Crawler crawler = new Crawler();
-		ls.login(crawler, teacher, URLConstant.LOGIN_URL);
-		if (crawler.isPass()) {
-			Map<String, String> classids = ls.getClassId(crawler, URLConstant.QUERY_CLASS_URL);
-			if (crawler.isPass()) {
-				encrypt(teacher);// 加密传前端，防止账号密码泄露
-				mav.addObject("teacher", teacher);
-				mav.addObject("classids", classids);
-				mav.setViewName("index.jsp");
-			} else {
-				mav.addObject("alertInfo", "登陆失败！\\n1.获取班级列表失败！");
-				mav.setViewName("redirect:/login.jsp");
-			}
-		} else {
-			mav.addObject("alertInfo", "登陆失败！请确认:\\n1.账号密码是否正确!\\n2.大思后台是否能正常登录！");
-			mav.setViewName("forward:/login.jsp");
-		}
-		crawler.close();
-		return mav;
-	}
-
-	/**
-	 * 查询学生的基本信息
-	 * 
-	 * @author LiQuanHui
-	 * @date 2017年11月19日 上午12:25:32
-	 * @param teacher
-	 *            教师类
-	 * @return 返回到学生信息表
-	 */
-	@RequestMapping("/stuInfo.action")
-	public ModelAndView queryStuInfo(Teacher teacher) {
-		ModelAndView mav = new ModelAndView();
-		decrypt(teacher);// 解密获取到账号密码
-		Crawler crawler = new Crawler();
-		ls.login(crawler, teacher, URLConstant.LOGIN_URL);
-		if (crawler.isPass()) {
-			List<List<String>> stuInfo = ls.getStuInfo(crawler,
-					URLConstant.QUERY_STUDENT_INFO_URL + teacher.getClassid() + "&pageSize=150");
-			if (crawler.isPass()) {
-				JSONArray stuInfoJson = JSONArray.fromObject(stuInfo);
-				mav.addObject("stuInfo", stuInfoJson);
-				// mav.setViewName("stuInfo.jsp");
-			} else {
-				mav.addObject("alertInfo", "获取信息失败！\\n1.请稍后再试！");
-				// mav.setViewName("stuInfo.jsp");
-			}
-		} else {
-			mav.addObject("alertInfo", "访问失败！\\n1.登录过期，请重新登录");
-			mav.addObject("relogin", "true");
-			// mav.setViewName("stuInfo.jsp");
-		}
-		crawler.close();
-		mav.setViewName("stuInfo.jsp");
-		return mav;
-	}
-
-	/**
-	 * 获取成绩排名
-	 * 
-	 * @author LiQuanHui
-	 * @date 2017年11月19日 下午4:27:41
-	 * @param teacher
-	 *            教师类
+	 * @date 2017年12月5日 下午6:30:32
+	 * @param teacherInfo
 	 * @return
 	 */
-	@RequestMapping("/scoreRank.action")
-	public ModelAndView getScoreRank(Teacher teacher) {
-		ModelAndView mav = new ModelAndView();
-		decrypt(teacher);// 解密获取到账号密码
-		Crawler crawler = new Crawler();
-		ls.login(crawler, teacher, URLConstant.LOGIN_URL);
+	@RequestMapping("/updateClasses.action")
+	public ModelAndView updateClasses(TeacherInfo teacherInfo){
+		ModelAndView mav=new ModelAndView();
+		//保存加密好的账密
+		String aesName=teacherInfo.getLoginName();
+		String aesPwd=teacherInfo.getLoginPwd();
+		//解密
+		decrypt(teacherInfo);
+		Crawler crawler=new Crawler();
+		//验证登录
+		CrawlerHandle.loginValidate(crawler, teacherInfo, URLConstant.LOGIN_URL);
 		if (crawler.isPass()) {
-			List<List<List<String>>> page = ls.getScoreRank(crawler, URLConstant.QUERY_RANK_URL + teacher.getClassid());
-			if (crawler.isPass()) {
-				mav.addObject("page", page);
-				// mav.setViewName("scoreRank.jsp");
-			} else {
-				mav.addObject("alertInfo", "获取信息失败！\\n1.请稍后再试！");
-				// mav.setViewName("scoreRank.jsp");
+			//从大思后台获取班级列表
+			Map<String, String> classids=CrawlerHandle.getClasses(crawler, URLConstant.QUERY_CLASS_URL);
+			if (classids!=null) {
+				logger.info(teacherInfo.getLoginName()+"爬虫获取班级列表成功");
+				//插入数据库
+				baseService.updateClasses(teacherInfo,classids);
+				mav.addObject("classids", classids);
+				mav.addObject("alertInfo", "更新班级列表完成");
+			}else {
+				logger.info(teacherInfo.getLoginName()+"爬虫获取班级列表失败");
+				mav.addObject("alertInfo", crawler.getInfo().toString());
 			}
 		} else {
-			mav.addObject("alertInfo", "访问失败！\\n1.登录过期，请重新登录");
-			mav.addObject("relogin", "true");
-			// mav.setViewName("scoreRank.jsp");
+			logger.info(teacherInfo.getLoginName() + "大思官网验证失败");
+			mav.addObject("alertInfo", crawler.getInfo().toString());
 		}
+		//设置加密账密,因为刷新了导航页，所以重新加密
+		teacherInfo.setLoginName(aesName);
+		teacherInfo.setLoginPwd(aesPwd);
+		mav.addObject("teacherInfo", teacherInfo);
+		mav.setViewName("index.jsp");
 		crawler.close();
-		mav.setViewName("scoreRank.jsp");
 		return mav;
 	}
-
+	
 	/**
-	 * 对teacher的loginId与password进行加密
-	 * 
+	 * 更新学生信息，不含最后上限日期
 	 * @author LiQuanhui
-	 * @date 2017年11月27日 下午5:56:31
-	 * @param teacher
+	 * @date 2017年12月7日 下午4:34:47
+	 * @param teacherInfo
+	 * @return
 	 */
-	private void encrypt(Teacher teacher) {
-		String loginIdAES = SecurityAES.encrypt(teacher.getLoginId());
-		String passwordAES = SecurityAES.encrypt(teacher.getPassword());
-		teacher.setLoginId(loginIdAES);
-		teacher.setPassword(passwordAES);
+	@RequestMapping("/UpdateStuInfo.action")
+	public ModelAndView UpdateStuInfo(TeacherInfo teacherInfo,String classid) {
+		ModelAndView mav = new ModelAndView();
+		decrypt(teacherInfo);// 解密获取到账号密码
+		Crawler crawler = new Crawler();
+		//验证登录
+		CrawlerHandle.loginValidate(crawler, teacherInfo, URLConstant.LOGIN_URL);
+		if (crawler.isPass()) {
+			List<StuInfo> stuInfo = CrawlerHandle.getStuInfo(crawler,
+					URLConstant.QUERY_STUDENT_INFO_URL + classid + "&pageSize=150",classid);
+			if (stuInfo!=null) {
+				logger.info(teacherInfo.getLoginName()+"爬虫学生信息成功");
+				ListUtils.printArrayList(stuInfo);
+//				先查数据库，通过stu_id比对，以爬的为标准，库少插库多删，都有的更新
+//				JSONArray stuInfoJson = JSONArray.fromObject(stuInfo);
+				mav.addObject("alertInfo", "更新学生信息完成");
+			} else {
+				logger.info(teacherInfo.getLoginName()+"爬虫学生信息失败");
+				mav.addObject("alertInfo", crawler.getInfo().toString());
+			}
+		} else {
+			logger.info(teacherInfo.getLoginName() + "大思官网验证失败");
+			mav.addObject("alertInfo", crawler.getInfo().toString());
+		}
+		crawler.close();
+		mav.setViewName("index.jsp");
+		return mav;
 	}
-
+	
 	/**
 	 * 对teacher的loginId与password进行解密
-	 * 
 	 * @author LiQuanhui
 	 * @date 2017年11月27日 下午5:56:55
 	 * @param teacher
 	 */
-	private void decrypt(Teacher teacher) {
-		String loginIdAES = SecurityAES.decrypt(teacher.getLoginId());
-		String passwordAES = SecurityAES.decrypt(teacher.getPassword());
-		teacher.setLoginId(loginIdAES);
-		teacher.setPassword(passwordAES);
+	private void decrypt(TeacherInfo teacher) {
+		String loginIdAES = SecurityAES.decrypt(teacher.getLoginName());
+		String passwordAES = SecurityAES.decrypt(teacher.getLoginPwd());
+		teacher.setLoginName(loginIdAES);
+		teacher.setLoginPwd(passwordAES);
 	}
+	
+
+//
+//	/**
+//	 * 查询学生的基本信息
+//	 * 
+//	 * @author LiQuanHui
+//	 * @date 2017年11月19日 上午12:25:32
+//	 * @param teacher
+//	 *            教师类
+//	 * @return 返回到学生信息表
+//	 */
+
+//
+//	/**
+//	 * 获取成绩排名
+//	 * 
+//	 * @author LiQuanHui
+//	 * @date 2017年11月19日 下午4:27:41
+//	 * @param teacher
+//	 *            教师类
+//	 * @return
+//	 */
+//	@RequestMapping("/scoreRank.action")
+//	public ModelAndView getScoreRank(Teacher teacher) {
+//		ModelAndView mav = new ModelAndView();
+//		decrypt(teacher);// 解密获取到账号密码
+//		Crawler crawler = new Crawler();
+//		ls.login(crawler, teacher, URLConstant.LOGIN_URL);
+//		if (crawler.isPass()) {
+//			List<List<List<String>>> page = ls.getScoreRank(crawler, URLConstant.QUERY_RANK_URL + teacher.getClassid());
+//			if (crawler.isPass()) {
+//				mav.addObject("page", page);
+//				// mav.setViewName("scoreRank.jsp");
+//			} else {
+//				mav.addObject("alertInfo", "获取信息失败！\\n1.请稍后再试！");
+//				// mav.setViewName("scoreRank.jsp");
+//			}
+//		} else {
+//			mav.addObject("alertInfo", "访问失败！\\n1.登录过期，请重新登录");
+//			mav.addObject("relogin", "true");
+//			// mav.setViewName("scoreRank.jsp");
+//		}
+//		crawler.close();
+//		mav.setViewName("scoreRank.jsp");
+//		return mav;
+//	}
+
 }

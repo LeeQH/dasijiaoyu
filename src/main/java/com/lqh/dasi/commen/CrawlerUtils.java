@@ -12,15 +12,12 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.cookie.Cookie;
-import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import com.lqh.dasi.pojo.Crawler;
-import com.lqh.dasi.pojo.Teacher;
 /**
  * 爬虫的工具类（post，get，cookie等）
  * @author:LiQuanhui
@@ -43,6 +40,7 @@ public class CrawlerUtils {
 		HttpPost httpPost=new HttpPost(post_url);
 		if(param!=null){
 			try {
+				httpPost.setHeader("Accept-Encoding", "identity");  
 				httpPost.setEntity(new UrlEncodedFormEntity(setPostParam(param),"UTF-8"));
 			} catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
@@ -55,6 +53,7 @@ public class CrawlerUtils {
 				crawler.setPass(true);
 			}else {
 				crawler.setPass(false);
+				crawler.setInfo(crawler.getInfo().append("链接不上大思后台，请确认该账号能进入大思后台\\n若大思后台更改过密码请在本系统也更改密码，并重新登录\\n"));
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -72,6 +71,7 @@ public class CrawlerUtils {
 	 */
 	public static Crawler get(Crawler crawler,String get_url){
 		HttpGet httpGet=new HttpGet(get_url);
+		httpGet.setHeader("Accept-Encoding", "identity"); 
 		try {
 			CloseableHttpResponse httpResponse=crawler.getHttpClient().execute(httpGet,crawler.getContext());
 			if(httpResponse.getStatusLine().getStatusCode()==200){
@@ -79,7 +79,7 @@ public class CrawlerUtils {
 				crawler.setPass(true);
 			}else {
 				crawler.setPass(false);
-			}
+				crawler.setInfo(crawler.getInfo().append("链接不上大思后台，请确认该账号现在能否大思后台\\n若大思后台更改过密码请在本系统也更改密码，并重新登录\\n"));			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -118,6 +118,9 @@ public class CrawlerUtils {
 		}
 		return doc;
 	}
+	
+	
+	
 	
 //	/**
 //	 * 获取cookie

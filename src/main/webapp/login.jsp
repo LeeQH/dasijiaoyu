@@ -20,22 +20,40 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <script src="<%=basePath%>/static/js/bootstrap.min.js" type="text/javascript"></script>
 
 <link href="<%=basePath%>/static/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-<script type="text/javascript">
-	$(function() {
-		var alertInfo='${alertInfo}';
-		if(alertInfo!=''){
-			alert(alertInfo);
-		}
-	});
-
-</script>
 </head>
+
+<script type="text/javascript">
+	function regist(){
+		var pwd1=document.getElementById("pwd1");
+		var pwd2=document.getElementById("pwd2");
+		if(pwd1.value!=""&&pwd2.value!=""){
+			if(pwd1.value==pwd2.value){
+				document.getElementById("regist").submit();
+			}else{
+				alert("两次密码不一致！");
+				pwd1.value="";
+				pwd2.value="";
+			}
+		}else{
+			alert("密码不能为空！");
+		}
+	}
+</script>
+
 <body>
 
-	<form action="<%=basePath%>/crawler/login.action" method="post">
-		<input type="text" name="loginId" />
-		<input type="password"name="password" />
-		<input type="submit" value="login">
+	<form action="<%=basePath%>/user/login.action" method="post">
+		<input type="text" name="loginName" />
+		<input type="password"name="loginPwd" />
+		<button type="submit" class="list-group-item">登录</button>
+	</form>
+	
+	<form id="regist" action="<%=basePath%>/user/regist.action" method="post">
+		<input type="text" name="loginName" />
+		<input type="password" id="pwd1" name="loginPwd" />
+		<input type="password" id="pwd2" name="loginPwd2" />
+		<button type="button" class="list-group-item" onclick="regist()">注册</button>
 	</form>
 </body>
+<jsp:include page="/WEB-INF/jsp/alert.jsp"></jsp:include>
 </html>

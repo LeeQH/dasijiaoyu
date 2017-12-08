@@ -22,7 +22,7 @@ public class ListUtils {
 			}
 		}else{
 			for(int i=0,size=list.size();i<size;i++){
-				System.out.print(list.get(i)+"\t");
+				System.out.print(list.get(i).toString()+"\t");
 			}
 			System.out.println();
 		}

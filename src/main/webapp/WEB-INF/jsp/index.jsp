@@ -32,7 +32,6 @@ $(window).scroll(function() {
 
 </head>
 <body>
-
 	<table width="100%">
 		<tr><td colspan="4" height="30px;"></td></tr>
 		<tr>
@@ -42,7 +41,5 @@ $(window).scroll(function() {
 			<td width="25px;"></td>
 		</tr>
 	</table>
-		
 </body>
-
 </html>

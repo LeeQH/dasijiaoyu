@@ -22,6 +22,7 @@ public class Crawler {
 	private RequestConfig requestConfig;
 	private CloseableHttpResponse httpResponse;
 	private boolean pass;
+	private StringBuffer info;
 
 	public Crawler() {
 		init();
@@ -38,6 +39,7 @@ public class Crawler {
 				.setRedirectStrategy(new DefaultRedirectStrategy()).setDefaultRequestConfig(requestConfig)
 				.setDefaultCookieStore(cookieStore).build();
 		pass = false;
+		info=new StringBuffer();
 		return this;
 	}
 
@@ -121,6 +123,14 @@ public class Crawler {
 
 	public void setPass(boolean pass) {
 		this.pass = pass;
+	}
+
+	public StringBuffer getInfo() {
+		return info;
+	}
+
+	public void setInfo(StringBuffer info) {
+		this.info = info;
 	}
 
 }

@@ -4,7 +4,7 @@
 			+ path;
 %>
 <script type="text/javascript">
-	function alertInfo(){
+	function alertInfo(basePath){
 		if('${alertInfo}'!=''){
 			alert('${alertInfo}');
 			if('${relogin}'=='true'){

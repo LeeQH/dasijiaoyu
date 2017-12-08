@@ -15,6 +15,12 @@
 	<!-- 配置service扫描 -->
 	<context:component-scan base-package="com.lqh.dasi.service"/>
 	
+	<!-- 配置Mapper扫描 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<!-- 设置扫描位置 -->
+		<property name="basePackage" value="com.lqh.dasi.mapper"></property>
+	</bean>
+	
 <!-- dao 配置 -->
 	<!-- 读取 jdbc.properties-->
 	<context:property-placeholder location="classpath:config/jdbc.properties"/>
@@ -37,9 +43,13 @@
 		<property name="dataSource" ref="dataSource"/>
 	</bean>
 	
-	<!-- 配置Mapper扫描 -->
-	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-		<!-- 设置扫描位置 -->
-		<property name="basePackage" value="com.lqh.dasi.mapper"></property>
+	<!-- transaction support-->
+	<!-- PlatformTransactionMnager -->
+	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+	    <property name="dataSource" ref="dataSource" />
 	</bean>
+	<!-- enable transaction annotation support -->
+	<tx:annotation-driven transaction-manager="txManager" />
+	
+
 </beans>

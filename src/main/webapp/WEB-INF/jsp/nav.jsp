@@ -9,11 +9,17 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <head>
 
 <script type="text/javascript">
-function queryInfo(type,classid,classname){
+function queryInfo(path,classid,classname){
 	document.getElementById("classid").value=classid;
 	document.getElementById("classname").value=classname;
-	var form=document.getElementById("from");
-	form.action="<%=basePath%>/crawler/"+type;
+	var form=document.getElementById("query");
+	form.action="<%=basePath%>"+path;
+	form.submit();
+}
+function updateInfo(path,classid){
+	document.getElementById("classid").value=classid;
+	var form=document.getElementById("update");
+	form.action="<%=basePath%>"+path;
 	form.submit();
 }
 </script>
@@ -27,7 +33,7 @@ function queryInfo(type,classid,classname){
 				<div class="panel panel-default">
 					<div class="panel-heading" role="tab" id="heading${status.count}">
 						<h4 class="panel-title">
-							<a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse${status.count}" aria-expanded="false" aria-controls="collapse${status.count}"> 
+							<a style="display: block;" class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse${status.count}" aria-expanded="false" aria-controls="collapse${status.count}"> 
 								<c:out value="${entry.key}" />
 							</a>
 						</h4>
@@ -38,21 +44,46 @@ function queryInfo(type,classid,classname){
 							<div class="list-group">
 							  <button type="button" class="list-group-item" onclick="queryInfo('stuInfo.action','${entry.value}','${entry.key}')">学生信息</button>
 							  <button type="button" class="list-group-item" onclick="queryInfo('scoreRank.action','${entry.value}','${entry.key}')">成绩排名</button>
+							  <button type="button" class="list-group-item" onclick="updateInfo('/crawler/UpdateStuInfo.action','${entry.value}')">更新(学生变动)</button>
 							</div>
 						</div>
 					</div>
 				</div>
 			</c:forEach>
+			<div class="panel panel-default">
+				<div class="panel-heading" role="tab" id="heading${status.count}">
+					<h4 class="panel-title">
+						<a style="display: block;" class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse${status.count}" aria-expanded="false" aria-controls="collapse${status.count}"> 
+							更新 
+						</a>
+					</h4>
+				</div>
+
+				<div id="collapse${status.count}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading${status.count}">
+					<div class="panel-body">
+						<div class="list-group">
+						  <button type="button" class="list-group-item" onclick="updateInfo()">更新班级列表</button>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
-		<form id="from" action="" target="mainView" method="post">
-			<input type="hidden" name="loginId" value="${teacher.loginId}" /> 
-			<input type="hidden" name="password" value="${teacher.password}" /> 
+		<form id="query" action="" target="mainView" method="post">
+			<input type="hidden" name="id" value="${teacherInfo.id}" /> 
+			<input type="hidden" name="loginName" value="${teacherInfo.loginName}" /> 
+			<input type="hidden" name="loginPwd" value="${teacherInfo.loginPwd}" /> 
 			<input type="hidden" id="classid" name="classid" /> 
 			<input type="hidden" id="classname" /> 
+		</form>
+		<form id="update" action="" method="post">
+			<input type="hidden" name="id" value="${teacherInfo.id}" /> 
+			<input type="hidden" name="loginName" value="${teacherInfo.loginName}" /> 
+			<input type="hidden" name="loginPwd" value="${teacherInfo.loginPwd}" /> 
+			<input type="hidden" id="classid" name="classid" /> 
 		</form>
 	</nav>
 </div>
 	
 </body>
-
+<jsp:include page="/WEB-INF/jsp/alert.jsp"></jsp:include>
 </html>
