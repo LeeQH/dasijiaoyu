@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lqh.dasi.mapper.StuInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.lqh.dasi.pojo.StuInfo" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="stu_id" property="stuId" jdbcType="VARCHAR" />
+    <result column="stu_name" property="stuName" jdbcType="VARCHAR" />
+    <result column="par_name" property="parName" jdbcType="VARCHAR" />
+    <result column="tel_num" property="telNum" jdbcType="VARCHAR" />
+    <result column="start_date" property="startDate" jdbcType="DATE" />
+    <result column="end_date" property="endDate" jdbcType="DATE" />
+    <result column="last_date" property="lastDate" jdbcType="DATE" />
+    <result column="class_id" property="classId" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, stu_id, stu_name, par_name, tel_num, start_date, end_date, last_date, class_id
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.lqh.dasi.pojo.StuInfoExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from stu_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from stu_info
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from stu_info
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.lqh.dasi.pojo.StuInfoExample" >
+    delete from stu_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.lqh.dasi.pojo.StuInfo" >
+    insert into stu_info (id, stu_id, stu_name, 
+      par_name, tel_num, start_date, 
+      end_date, last_date, class_id
+      )
+    values (#{id,jdbcType=INTEGER}, #{stuId,jdbcType=VARCHAR}, #{stuName,jdbcType=VARCHAR}, 
+      #{parName,jdbcType=VARCHAR}, #{telNum,jdbcType=VARCHAR}, #{startDate,jdbcType=DATE}, 
+      #{endDate,jdbcType=DATE}, #{lastDate,jdbcType=DATE}, #{classId,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.lqh.dasi.pojo.StuInfo" >
+    insert into stu_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="stuId != null" >
+        stu_id,
+      </if>
+      <if test="stuName != null" >
+        stu_name,
+      </if>
+      <if test="parName != null" >
+        par_name,
+      </if>
+      <if test="telNum != null" >
+        tel_num,
+      </if>
+      <if test="startDate != null" >
+        start_date,
+      </if>
+      <if test="endDate != null" >
+        end_date,
+      </if>
+      <if test="lastDate != null" >
+        last_date,
+      </if>
+      <if test="classId != null" >
+        class_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="stuId != null" >
+        #{stuId,jdbcType=VARCHAR},
+      </if>
+      <if test="stuName != null" >
+        #{stuName,jdbcType=VARCHAR},
+      </if>
+      <if test="parName != null" >
+        #{parName,jdbcType=VARCHAR},
+      </if>
+      <if test="telNum != null" >
+        #{telNum,jdbcType=VARCHAR},
+      </if>
+      <if test="startDate != null" >
+        #{startDate,jdbcType=DATE},
+      </if>
+      <if test="endDate != null" >
+        #{endDate,jdbcType=DATE},
+      </if>
+      <if test="lastDate != null" >
+        #{lastDate,jdbcType=DATE},
+      </if>
+      <if test="classId != null" >
+        #{classId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.lqh.dasi.pojo.StuInfoExample" resultType="java.lang.Integer" >
+    select count(*) from stu_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update stu_info
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.stuId != null" >
+        stu_id = #{record.stuId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.stuName != null" >
+        stu_name = #{record.stuName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.parName != null" >
+        par_name = #{record.parName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.telNum != null" >
+        tel_num = #{record.telNum,jdbcType=VARCHAR},
+      </if>
+      <if test="record.startDate != null" >
+        start_date = #{record.startDate,jdbcType=DATE},
+      </if>
+      <if test="record.endDate != null" >
+        end_date = #{record.endDate,jdbcType=DATE},
+      </if>
+      <if test="record.lastDate != null" >
+        last_date = #{record.lastDate,jdbcType=DATE},
+      </if>
+      <if test="record.classId != null" >
+        class_id = #{record.classId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update stu_info
+    set id = #{record.id,jdbcType=INTEGER},
+      stu_id = #{record.stuId,jdbcType=VARCHAR},
+      stu_name = #{record.stuName,jdbcType=VARCHAR},
+      par_name = #{record.parName,jdbcType=VARCHAR},
+      tel_num = #{record.telNum,jdbcType=VARCHAR},
+      start_date = #{record.startDate,jdbcType=DATE},
+      end_date = #{record.endDate,jdbcType=DATE},
+      last_date = #{record.lastDate,jdbcType=DATE},
+      class_id = #{record.classId,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.lqh.dasi.pojo.StuInfo" >
+    update stu_info
+    <set >
+      <if test="stuId != null" >
+        stu_id = #{stuId,jdbcType=VARCHAR},
+      </if>
+      <if test="stuName != null" >
+        stu_name = #{stuName,jdbcType=VARCHAR},
+      </if>
+      <if test="parName != null" >
+        par_name = #{parName,jdbcType=VARCHAR},
+      </if>
+      <if test="telNum != null" >
+        tel_num = #{telNum,jdbcType=VARCHAR},
+      </if>
+      <if test="startDate != null" >
+        start_date = #{startDate,jdbcType=DATE},
+      </if>
+      <if test="endDate != null" >
+        end_date = #{endDate,jdbcType=DATE},
+      </if>
+      <if test="lastDate != null" >
+        last_date = #{lastDate,jdbcType=DATE},
+      </if>
+      <if test="classId != null" >
+        class_id = #{classId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.lqh.dasi.pojo.StuInfo" >
+    update stu_info
+    set stu_id = #{stuId,jdbcType=VARCHAR},
+      stu_name = #{stuName,jdbcType=VARCHAR},
+      par_name = #{parName,jdbcType=VARCHAR},
+      tel_num = #{telNum,jdbcType=VARCHAR},
+      start_date = #{startDate,jdbcType=DATE},
+      end_date = #{endDate,jdbcType=DATE},
+      last_date = #{lastDate,jdbcType=DATE},
+      class_id = #{classId,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
