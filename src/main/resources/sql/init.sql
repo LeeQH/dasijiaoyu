@@ -1,7 +1,7 @@
 -- root用户操作
 	-- 创建数据库
-	-- drop database dasiutil;
-	CREATE DATABASE dasi_util;
+	-- drop database dasi_util;
+	CREATE DATABASE dasi_util CHARACTER SET utf8;
 
 	-- 创建用户
 	-- drop user 'dasi'@'localhost'
@@ -9,8 +9,8 @@
 
 	-- select USER FROM USER; 
 
-	-- 给dasi用户授予mydasi数据库的所有权
-	GRANT ALL PRIVILEGES ON dasiutil.* TO 'dasi'@'localhost' IDENTIFIED BY 'mykeyisthis';
+	-- 给dasi用户授予dasi_util数据库的所有权
+	GRANT ALL PRIVILEGES ON dasi_util.* TO 'dasi'@'localhost' IDENTIFIED BY 'mykeyisthis';
 	
 -- drop table `STU_INFO`
 -- drop table `TEACHER_INFO`
