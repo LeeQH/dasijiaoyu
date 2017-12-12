@@ -1,9 +1,14 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%
 	String path = request.getContextPath();
 	String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
 			+ path;
+%>
+<%
+	long nowDateTime=new Date().getTime()/86400000*86400000-28800000L;
+	System.out.print(nowDateTime);
 %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
@@ -30,32 +35,11 @@
 <script type="text/javascript">
 	
 	$(function() {
-		//获取二维数组
-		data = ${stuInfo};
-		//获取表头
-		dataHead = data[0];
-		//删除表头
-		data.splice(0, 1);
-		//班级id
-		classId=window.parent.document.getElementById("classid").value;
-		//班级名称
-		className=window.parent.document.getElementById("classname").value;
-		//初始化select
-		init();
+		className=window.parent.document.getElementById("className").value;
 		//设置iframe的高
 		setIframeHeight();
 	});
 
-	function init() {
-		var sortType = document.getElementById('sortType');
-		for (var i = 0; i < dataHead.length; i++) {
-			sortType.options.add(new Option(dataHead[i], i));
-		}
-		var thead = document.getElementById('head');
-		addDataToTHead(thead,dataHead);
-		var tbody = document.getElementById('body');
-		addDataToTBody(tbody, data);
-	}
 	function goSort() {
 		var sortType = document.getElementById('sortType');
 		var index1 = sortType.selectedIndex;
@@ -82,25 +66,7 @@
 			return sortForChina(data, param, order);
 		}
 	}
-	
-	function exportExcelWithJAVA(){
-		var dataJson=[dataHead,data,classId+".xls"];
-		$.ajax({
-	        url: '<%=basePath%>/exportExcel/stuInfo.action',
-	        type: 'post',
-	        data: JSON.stringify(dataJson), // 以json字符串方式传递
-	        contentType:"application/json;charset=utf-8",//data类型
-	        dataType: 'text', //返回类型
-	        success: function(a) {
-	        	var url='<%=basePath%>/exportExcel/download.action?fileName='+classId+'.xls';
-	        	location.href=url;
-	        },
-	        error: function(a) {
-				alert("fail");
-	        }
-	    });
-	}
-	
+		
 	function exportExcelWithJS(){
 		$('#default').tableExport({
         	type:'excel',
@@ -111,14 +77,43 @@
         	excelstyles:['text-align']//使用样式，不用填值只写属性，值读取的是html中的
         });
 	}
+	
+	function updateStudent(path){
+		var loginName=window.parent.document.getElementById("loginName").value;
+		var loginPwd=window.parent.document.getElementById("loginPwd").value;
+		var classId=window.parent.document.getElementById("classId").value;
+		
+		var url="<%=basePath%>"+path;
+		var params={loginName:loginName,loginPwd:loginPwd,classId:classId};
+		
+		fromPost(url,params);
+	}
+	
+	function updateLastDate(path){
+		var loginName=window.parent.document.getElementById("loginName").value;
+		var loginPwd=window.parent.document.getElementById("loginPwd").value;
+		var classId=window.parent.document.getElementById("classId").value;
+		
+		var url="<%=basePath%>"+path;
+		var params={loginName:loginName,loginPwd:loginPwd,classId:classId};
+		
+		fromPost(url,params);
+	}
 </script>
 
 </head>
 <body>
 	<div>
 		<div class="form-inline navbar-fixed-top">
-			<span style="margin-left: 50px"></span>
-			<select class="form-control" id="sortType"></select>
+			<span style="margin-left: 10px"></span>
+			<select class="form-control" id="sortType">
+				<option value="1">学生姓名</option>
+				<option value="2">手机号码</option>
+				<option value="3">上线日期</option>
+				<option value="4">结束日期</option>
+				<option value="5">最后上线日期</option>
+				<option value="6">未上线天数</option>
+			</select>
 			<select class="form-control" id="sortMethod">
 				<option value="asc">升序</option>
 				<option value="desc">降序</option>
@@ -126,16 +121,53 @@
 			<button type="button" class="btn btn-primary" onclick="goSort()">确定</button>
 			<span style="margin-left: 50px"></span>
 			<input type="text" placeholder="输入文字回车搜索" onchange="searchTable(this)">
-			<!-- java导出 -->
-			<button class="btn btn-primary" type="button" style="float: right;" onclick="exportExcelWithJAVA()">导出</button>
+			<button class="btn btn-primary" type="button" style="float: right;" onclick="updateLastDate('/crawler/updateLastDate.action')">更新最后上线日期</button>
+			<button class="btn btn-primary" type="button" style="float: right;" onclick="updateStudent('/crawler/updateStuInfo.action')">更新学生信息</button>
 			<!-- js导出 （释放服务器性能） -->
 			<button class="btn btn-primary"  type="button" style="float: right;" onclick="exportExcelWithJS()">下载本表格</button>
 		</div>
 		<br>
 		<br>
+		
 		<table style="margin-left: 10px;" class="table table-hover" id="default">
-			<thead id="head"></thead>
-			<tbody id="body"></tbody>
+			<thead id="head">
+				<tr>
+					<th>编号</th>
+					<th>学生姓名</th>
+					<th>家长姓名</th>
+					<th>手机号码</th>
+					<th>上线日期</th>
+					<th>结束日期</th>
+					<th>剩余天数</th>
+					<th>最后上线日期</th>
+					<th>未上线天数</th>
+				</tr>
+			</thead>
+			<tbody id="body">
+				<c:set var="now" value="<%=nowDateTime%>"></c:set>
+				<c:forEach items="${stuList}" var="stu" varStatus="status">
+					<tr>
+						<td><c:out value="${status.count}"/></td>
+						<td><c:out value="${stu.stuName}"/></td>
+						<td><c:out value="${stu.telNum}"/></td>
+						<td><c:out value="${stu.parName}"/></td>
+						<td><fmt:formatDate value="${stu.startDate}" pattern="yyyy-MM-dd" /></td>
+						<td><fmt:formatDate value="${stu.endDate}" pattern="yyyy-MM-dd" /></td>
+						<td>
+							<c:if test="${stu.endDate!=null && stu.startDate!=null}">
+								<fmt:formatNumber value="${(stu.endDate.getTime()-stu.startDate.getTime())/86400000}"/>
+							</c:if>
+						</td>
+						<td><fmt:formatDate value="${stu.lastDate}" pattern="yyyy-MM-dd" /></td>
+						<td>
+							<c:if test="${stu.lastDate!=null}">
+								<fmt:formatNumber value="${(now-stu.lastDate.getTime())/86400000}"/>
+							</c:if>
+						</td>
+						
+					</tr>
+				</c:forEach>
+			</tbody>
 		</table>
 	</div>
 </body>

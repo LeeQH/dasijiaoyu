@@ -29,6 +29,17 @@
 		//设置iframe的高
 		setIframeHeight();
 	});
+	
+	function updateMonthScore(path){
+		var loginName=window.parent.document.getElementById("loginName").value;
+		var loginPwd=window.parent.document.getElementById("loginPwd").value;
+		var classId=window.parent.document.getElementById("classId").value;
+		
+		var url="<%=basePath%>"+path;
+		var params={loginName:loginName,loginPwd:loginPwd,classId:classId};
+		
+		fromPost(url,params);
+	}
 </script>
 
 </head>
@@ -36,29 +47,30 @@
 <div style="width: 100%;">
 	<span style="margin-left: 15px;"></span>
 	<input type="text" placeholder="输入文字回车搜索" onchange="searchTable(this)">
+	<button class="btn btn-primary" type="button" style="float: right;" onclick="updateMonthScore('/crawler/updateMonthScore.action')">更新成绩</button>
 	<br><br>
-	<c:forEach items="${page}" var="table" varStatus="status">
-		<div style="float: left;width: 30%;margin-left: 15px;">
-			<table class="table table-hover table-bordered" id="${status.count}">
-				<c:if test="${status.count==1}">
-					<tr><th colspan="3">日排名</th></tr>	
-				</c:if>
-				<c:if test="${status.count==2}">
-					<tr><th colspan="3">月排名</th></tr>	
-				</c:if>
-				<c:if test="${status.count==3}">
-					<tr><th colspan="3">年排名</th></tr>	
-				</c:if>
-				<c:forEach items="${table}" var="row">
+	<table style="margin-left: 10px;" class="table table-hover" id="default">
+			<thead id="head">
+				<tr>
+					<th>编号</th>
+					<th>学生姓名</th>
+					<th>成绩</th>
+					<th>目标</th>
+					<th>是否完成</th>
+				</tr>
+			</thead>
+			<tbody id="body">
+				<c:forEach items="${monthScoreList}" var="score" varStatus="status">
 					<tr>
-						<c:forEach items="${row}" var="col">
-							<td><c:out value="${col}" /></td>
-						</c:forEach>
+						<td><c:out value="${status.count}"/></td>
+						<td><c:out value="${score.stuName}"/></td>
+						<td><c:out value="${score.score}"/></td>
+						<td><c:out value="${score.goalScore}"/></td>
+						<td><c:out value="${score.finishGoal}"/></td>
 					</tr>
 				</c:forEach>
-			</table>
-		</div>
-	</c:forEach>
+			</tbody>
+		</table>
 </div>
 </body>
 <jsp:include page="/WEB-INF/jsp/alert.jsp"></jsp:include>

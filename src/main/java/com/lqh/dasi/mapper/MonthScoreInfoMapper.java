@@ -27,4 +27,9 @@ public interface MonthScoreInfoMapper {
     int updateByPrimaryKeySelective(MonthScoreInfo record);
 
     int updateByPrimaryKey(MonthScoreInfo record);
+    
+    //查询条数
+    int insertBatch(List<MonthScoreInfo> record);
+    //批量修改
+    int updateBatch(List<MonthScoreInfo> record);
 }

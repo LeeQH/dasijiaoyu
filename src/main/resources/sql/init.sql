@@ -92,6 +92,19 @@ BEGIN
 END $$ 
 DELIMITER ; 
 
+-- 修改学生信息时同步修改month_score_info
+DELIMITER $$ 
+DROP TRIGGER IF EXISTS `dasi_util`.`update_month_score`$$ 
+CREATE TRIGGER `dasi_util`.`update_month_score` 
+AFTER UPDATE ON `dasi_util`.`stu_info`
+FOR EACH ROW 
+BEGIN
+   IF new.`stu_name` <> old.`stu_name` THEN
+       UPDATE `dasi_util`.`MONTH_SCORE_INFO` SET `stu_name`=new.`stu_name` WHERE `stu_id`=new.`stu_id`;
+   END IF;
+END $$ 
+DELIMITER ; 
+
 -- 修改分数时判断是否达成目标
 DELIMITER $$ 
 DROP TRIGGER IF EXISTS `dasi_util`.`finish_goal`$$ 

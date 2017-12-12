@@ -298,7 +298,7 @@
     </foreach>
   </delete>
   
-  <update id="updateBatch" parameterType="java.util.List" >
+  <update id="updateBatchStu" parameterType="java.util.List" >
     update stu_info
     set 
       stu_id = 
@@ -338,4 +338,17 @@
         #{item.id,jdbcType=INTEGER}
      </foreach>
   </update>
+  
+  <update id="updateBatchLastDate" parameterType="java.util.Map" >
+    update stu_info
+    set 
+      last_date = #{lastDate,jdbcType=DATE}
+    where class_id = #{classId,jdbcType=VARCHAR} and stu_name in
+    <foreach collection="stuNames" item="item" index="index" open="(" separator="," close=")"> 
+        #{item,jdbcType=VARCHAR}
+     </foreach>
+  </update>
+  
+  
+  
 </mapper>

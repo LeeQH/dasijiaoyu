@@ -40,7 +40,7 @@ public class DateUtils {
 	 * @param date2 另一个时间
 	 * @return 日期相差天数
 	 */
-	public static String differentDays(Date date1,Date date2){
+	public static Integer differentDays(Date date1,Date date2){
 		Long time1=date1.getTime();
 		Long time2=date2.getTime();
 		Long days=null;
@@ -49,6 +49,13 @@ public class DateUtils {
 		else
 			days=time2-time1;
 		double dayNum=(double)days/86400000;
-		return  (int)dayNum+"";
+		return  (int)dayNum;
 	}
+	
+	public static String dateToString(Date date,String format){
+		SimpleDateFormat simpleDateFormat=new SimpleDateFormat(format);
+		String strdate = simpleDateFormat.format(date);
+		return strdate;
+	}
+	
 }

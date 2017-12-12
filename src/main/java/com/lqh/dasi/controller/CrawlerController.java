@@ -1,5 +1,7 @@
 package com.lqh.dasi.controller;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +16,7 @@ import com.lqh.dasi.commen.ListUtils;
 import com.lqh.dasi.commen.SecurityAES;
 import com.lqh.dasi.commen.URLConstant;
 import com.lqh.dasi.pojo.Crawler;
+import com.lqh.dasi.pojo.MonthScoreInfo;
 import com.lqh.dasi.pojo.StuInfo;
 import com.lqh.dasi.pojo.TeacherInfo;
 import com.lqh.dasi.service.BaseService;
@@ -82,8 +85,8 @@ public class CrawlerController {
 	 * @param teacherInfo
 	 * @return
 	 */
-	@RequestMapping("/UpdateStuInfo.action")
-	public ModelAndView UpdateStuInfo(TeacherInfo teacherInfo,String classid) {
+	@RequestMapping("/updateStuInfo.action")
+	public ModelAndView UpdateStuInfo(TeacherInfo teacherInfo,String classId) {
 		ModelAndView mav = new ModelAndView();
 		decrypt(teacherInfo);// 解密获取到账号密码
 		Crawler crawler = new Crawler();
@@ -91,13 +94,14 @@ public class CrawlerController {
 		CrawlerHandle.loginValidate(crawler, teacherInfo, URLConstant.LOGIN_URL);
 		if (crawler.isPass()) {
 			List<StuInfo> stuInfo = CrawlerHandle.getStuInfo(crawler,
-					URLConstant.QUERY_STUDENT_INFO_URL + classid + "&pageSize=150",classid);
+					URLConstant.QUERY_STUDENT_INFO_URL + classId + "&pageSize=150",classId);
 			if (stuInfo!=null) {
 				logger.info(teacherInfo.getLoginName()+"爬虫学生信息成功，共"+stuInfo.size()+"条");
 //				ListUtils.printArrayList(stuInfo);
 //				先查数据库，通过stu_id比对，以爬的为标准，库少插库多删，都有的更新
 				baseService.updateStudents(stuInfo);
-//				JSONArray stuInfoJson = JSONArray.fromObject(stuInfo);
+				List<StuInfo> stuList=baseService.selectStuInfo(classId);
+				mav.addObject("stuList", stuList);
 				mav.addObject("alertInfo", "更新学生信息完成");
 			} else {
 				logger.info(teacherInfo.getLoginName()+"爬虫学生信息失败");
@@ -108,7 +112,69 @@ public class CrawlerController {
 			mav.addObject("alertInfo", crawler.getInfo().toString());
 		}
 		crawler.close();
-		mav.setViewName("index.jsp");
+		mav.setViewName("stuInfo.jsp");
+		return mav;
+	}
+	
+	@RequestMapping("/updateLastDate.action")
+	public ModelAndView updateLastDate(TeacherInfo teacherInfo,String classId){
+		ModelAndView mav=new ModelAndView();
+		Crawler crawler = new Crawler();
+//		CrawlerHandle.loginValidate(crawler, teacherInfo, URLConstant.LOGIN_URL);
+//		if (crawler.isPass()) {
+			List<List<String>> scoreRank = CrawlerHandle.getScoreRank(crawler,URLConstant.QUERY_RANK_URL+classId , 0);
+			if (scoreRank!=null) {
+				logger.info(teacherInfo.getLoginName()+"爬虫日成绩排名成功，共"+scoreRank.size()+"条");
+//				ListUtils.printArrayList(scoreRank);
+//				更新上线时间
+				baseService.updateLastDate(scoreRank, classId);
+				List<StuInfo> stuList=baseService.selectStuInfo(classId);
+				mav.addObject("stuList", stuList);
+				mav.addObject("alertInfo", "更新最后上线完成");
+			} else {
+				logger.info(teacherInfo.getLoginName()+"爬虫学生信息失败");
+				mav.addObject("alertInfo", crawler.getInfo().toString());
+			}
+//		} else {
+//			logger.info(teacherInfo.getLoginName() + "大思官网验证失败");
+//			mav.addObject("alertInfo", crawler.getInfo().toString());
+//		}
+		crawler.close();
+		mav.setViewName("stuInfo.jsp");
+		return mav;
+	}
+	
+	
+	@RequestMapping("/updateMonthScore")
+	public ModelAndView updateMonthScore(TeacherInfo teacherInfo,String classId){
+		ModelAndView mav=new ModelAndView();
+		Crawler crawler = new Crawler();
+//		CrawlerHandle.loginValidate(crawler, teacherInfo, URLConstant.LOGIN_URL);
+//		if (crawler.isPass()) {
+			List<List<String>> scoreRank = CrawlerHandle.getScoreRank(crawler,URLConstant.QUERY_RANK_URL+classId , 1);
+			if (scoreRank!=null) {
+				logger.info(teacherInfo.getLoginName()+"爬虫月成绩排名成功，共"+scoreRank.size()+"条");
+				ListUtils.printArrayList(scoreRank);
+//				更新当月成绩					
+				baseService.updateMonthScore(scoreRank,classId);
+				
+				Calendar calendar=Calendar.getInstance();
+				int year=calendar.get(Calendar.YEAR);
+				int month=calendar.get(Calendar.MONTH)+1;
+				String time=year+(month<10?"0"+month:""+month);
+				List<MonthScoreInfo> monthScoreList=baseService.selectMonthScore(classId, time);
+				mav.addObject("monthScoreList", monthScoreList);
+				mav.addObject("alertInfo", "更新成绩完成");
+			} else {
+				logger.info(teacherInfo.getLoginName()+"爬虫学生信息失败");
+				mav.addObject("alertInfo", crawler.getInfo().toString());
+			}
+//		} else {
+//			logger.info(teacherInfo.getLoginName() + "大思官网验证失败");
+//			mav.addObject("alertInfo", crawler.getInfo().toString());
+//		}
+		crawler.close();
+		mav.setViewName("scoreRank.jsp");
 		return mav;
 	}
 	
@@ -118,58 +184,10 @@ public class CrawlerController {
 	 * @date 2017年11月27日 下午5:56:55
 	 * @param teacher
 	 */
-	private void decrypt(TeacherInfo teacher) {
+ 	private void decrypt(TeacherInfo teacher) {
 		String loginIdAES = SecurityAES.decrypt(teacher.getLoginName());
 		String passwordAES = SecurityAES.decrypt(teacher.getLoginPwd());
 		teacher.setLoginName(loginIdAES);
 		teacher.setLoginPwd(passwordAES);
 	}
-	
-
-//
-//	/**
-//	 * 查询学生的基本信息
-//	 * 
-//	 * @author LiQuanHui
-//	 * @date 2017年11月19日 上午12:25:32
-//	 * @param teacher
-//	 *            教师类
-//	 * @return 返回到学生信息表
-//	 */
-
-//
-//	/**
-//	 * 获取成绩排名
-//	 * 
-//	 * @author LiQuanHui
-//	 * @date 2017年11月19日 下午4:27:41
-//	 * @param teacher
-//	 *            教师类
-//	 * @return
-//	 */
-//	@RequestMapping("/scoreRank.action")
-//	public ModelAndView getScoreRank(Teacher teacher) {
-//		ModelAndView mav = new ModelAndView();
-//		decrypt(teacher);// 解密获取到账号密码
-//		Crawler crawler = new Crawler();
-//		ls.login(crawler, teacher, URLConstant.LOGIN_URL);
-//		if (crawler.isPass()) {
-//			List<List<List<String>>> page = ls.getScoreRank(crawler, URLConstant.QUERY_RANK_URL + teacher.getClassid());
-//			if (crawler.isPass()) {
-//				mav.addObject("page", page);
-//				// mav.setViewName("scoreRank.jsp");
-//			} else {
-//				mav.addObject("alertInfo", "获取信息失败！\\n1.请稍后再试！");
-//				// mav.setViewName("scoreRank.jsp");
-//			}
-//		} else {
-//			mav.addObject("alertInfo", "访问失败！\\n1.登录过期，请重新登录");
-//			mav.addObject("relogin", "true");
-//			// mav.setViewName("scoreRank.jsp");
-//		}
-//		crawler.close();
-//		mav.setViewName("scoreRank.jsp");
-//		return mav;
-//	}
-
 }

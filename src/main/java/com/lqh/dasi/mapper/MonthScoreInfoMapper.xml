@@ -255,4 +255,29 @@
       finish_goal = #{finishGoal,jdbcType=BIT}
     where id = #{id,jdbcType=INTEGER}
   </update>
+ 
+  
+  <insert id="insertBatch" parameterType="java.util.List">  
+    insert into month_score_info (id, month, class_id, 
+      stu_id, stu_name, score, goal_score, finish_goal)
+    values 
+    <foreach collection="list" item="item" index="index" separator="," >  
+        (#{id,jdbcType=INTEGER}, #{month,jdbcType=CHAR}, #{classId,jdbcType=VARCHAR}, 
+      #{stuId,jdbcType=VARCHAR}, #{stuName,jdbcType=VARCHAR}, #{score,jdbcType=INTEGER}, 
+      #{goalScore,jdbcType=INTEGER}, #{finishGoal,jdbcType=BIT})
+    </foreach>  
+  </insert>
+  
+  <update id="updateBatch" parameterType="java.util.List" >
+    update month_score_info
+    set 
+      score = 
+      <foreach collection="list" item="item" index="index" open="case id " separator=" " close="end"> 
+        when #{item.id,jdbcType=INTEGER} then #{item.score,jdbcType=CHAR}
+      </foreach>
+    where id in 
+    <foreach collection="list" item="item" index="index" open="(" separator="," close=")"> 
+        #{item.id,jdbcType=INTEGER}
+     </foreach>
+  </update>
 </mapper>

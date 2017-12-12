@@ -20,7 +20,7 @@ public class StuInfo {
     private Date lastDate;
 
     private String classId;
-
+    
     public Integer getId() {
         return id;
     }
