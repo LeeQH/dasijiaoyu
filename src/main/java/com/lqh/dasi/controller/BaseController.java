@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.lqh.dasi.pojo.MonthScoreInfo;
@@ -57,5 +58,15 @@ public class BaseController {
 		}
 		mav.setViewName("scoreRank.jsp");
 		return mav;
+	}
+	
+	@RequestMapping("/updateGoal.action")
+	@ResponseBody
+	public String updateGoal(String stuId,Integer goalScore){
+		int a=baseService.updateGoalScore(stuId, goalScore);
+		if(a!=0)
+			return "success";
+		else
+			return "fail";
 	}
 }

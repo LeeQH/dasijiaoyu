@@ -221,19 +221,21 @@ public class BaseService {
 			logger.info("DAO操作：updateMonthScore()上个月时间：" + time2);
 			// 上个月的数据
 			List<MonthScoreInfo> msList = selectMonthScore(classId, time2);
-			for (int i = 0, size = msList.size(); i < size; i++) {
-				msList.get(i).setMonth(time);
-				msList.get(i).setScore(null);
-				msList.get(i).setGoalScore(null);
-				msList.get(i).setFinishGoal(false);
-				for (int j = 0, jsize = scoreRank.size(); j < jsize; j++) {
-					if (msList.get(i).getStuName().equals(scoreRank.get(j).get(1))) {
-						msList.get(i).setScore(Integer.valueOf(scoreRank.get(j).get(2)));
+			if (msList!=null&&msList.size()!=0) {
+				for (int i = 0, size = msList.size(); i < size; i++) {
+					msList.get(i).setMonth(time);
+					msList.get(i).setScore(null);
+					msList.get(i).setGoalScore(null);
+					msList.get(i).setFinishGoal(false);
+					for (int j = 0, jsize = scoreRank.size(); j < jsize; j++) {
+						if (msList.get(i).getStuName().equals(scoreRank.get(j).get(1))) {
+							msList.get(i).setScore(Integer.valueOf(scoreRank.get(j).get(2)));
+						}
 					}
 				}
+				int a = monthScoreInfoMapper.insertBatch(msList);
+				logger.info("DAO操作：insertBatch(msList)：" + a);
 			}
-			int a = monthScoreInfoMapper.insertBatch(msList);
-			logger.info("DAO操作：insertBatch(msList)：" + a);
 		} else {
 			// 这个月的数据
 			List<MonthScoreInfo> msList = selectMonthScore(classId, time);
@@ -250,4 +252,12 @@ public class BaseService {
 		}
 	}
 
+	
+	public int updateGoalScore(String stuId,Integer goalScore) {
+		MonthScoreInfo monthScoreInfo=new MonthScoreInfo();
+		monthScoreInfo.setGoalScore(goalScore);
+		MonthScoreInfoExample example=new MonthScoreInfoExample();
+		example.createCriteria().andStuIdEqualTo(stuId);
+		return monthScoreInfoMapper.updateByExampleSelective(monthScoreInfo, example);
+	}
 }

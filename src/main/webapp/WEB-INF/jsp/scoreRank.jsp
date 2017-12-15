@@ -40,6 +40,37 @@
 		
 		fromPost(url,params);
 	}
+	
+	function showInput(stuId){
+		$("#"+stuId+"1").removeClass("hidden");//输入框
+		$("#"+stuId+"2").addClass("hidden");//文本：目标成绩
+		$("#"+stuId+"3").addClass("hidden");//按钮：修改成绩
+		$("#"+stuId+"4").removeClass("hidden");//确认
+		$("#"+stuId+"5").removeClass("hidden");//取消
+	}
+	function closeInput(stuId){
+		$("#"+stuId+"1").addClass("hidden");//输入框
+		$("#"+stuId+"2").removeClass("hidden");//文本：目标成绩
+		$("#"+stuId+"3").removeClass("hidden");//按钮：修改成绩
+		$("#"+stuId+"4").addClass("hidden");//确认
+		$("#"+stuId+"5").addClass("hidden");//取消
+	}
+	function updateGoal(stuId){
+		var goalScore=$("#"+stuId+"1").val();
+		$.ajax({  
+		    url:"<%=basePath%>/base/updateGoal.action",    //请求的url地址  
+		    dataType:"text",   //返回格式为json  
+		    async:true,//请求是否异步，默认为异步，这也是ajax重要特性  
+		    data:{"stuId":stuId,"goalScore":goalScore},    //参数值  
+		    type:"post",   //请求方式 get 或者post  
+		    success:function(msg){ 
+		    	if(msg=='success'){
+		    		$("#"+stuId+"2").text(goalScore);
+		    	}
+		        closeInput(stuId);
+		    }
+		});  
+	}
 </script>
 
 </head>
@@ -57,6 +88,7 @@
 					<th>成绩</th>
 					<th>目标</th>
 					<th>是否完成</th>
+					<th>设置目标</th>
 				</tr>
 			</thead>
 			<tbody id="body">
@@ -65,8 +97,16 @@
 						<td><c:out value="${status.count}"/></td>
 						<td><c:out value="${score.stuName}"/></td>
 						<td><c:out value="${score.score}"/></td>
-						<td><c:out value="${score.goalScore}"/></td>
+						<td>
+							<input class="hidden" type="number" id="${score.stuId}1" value="${score.goalScore}">
+							<span id="${score.stuId}2" ><c:out value="${score.goalScore}"/></span>
+						</td>
 						<td><c:out value="${score.finishGoal}"/></td>
+						<td>
+							<button class="btn btn-info" id="${score.stuId}3" type="button" onclick="showInput('${score.stuId}')">修改目标</button>
+							<button class="btn btn-success btn-sm hidden" id="${score.stuId}4" type="button" onclick="updateGoal('${score.stuId}')">确认</button>
+							<button class="btn btn-warning btn-sm hidden" id="${score.stuId}5" type="button" onclick="closeInput('${score.stuId}')">取消</button>
+						</td>
 					</tr>
 				</c:forEach>
 			</tbody>
