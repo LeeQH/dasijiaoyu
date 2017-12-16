@@ -127,7 +127,7 @@
 			<span style="margin-left: 50px"></span>
 			<input type="text" placeholder="输入文字回车搜索" onchange="searchTable(this)">
 			<!-- java导出 -->
-			<button class="btn btn-primary" type="button" style="float: right;" onclick="exportExcelWithJAVA()">导出</button>
+<!-- 			<button class="btn btn-primary" type="button" style="float: right;" onclick="exportExcelWithJAVA()">导出</button> -->
 			<!-- js导出 （释放服务器性能） -->
 			<button class="btn btn-primary"  type="button" style="float: right;" onclick="exportExcelWithJS()">下载本表格</button>
 		</div>

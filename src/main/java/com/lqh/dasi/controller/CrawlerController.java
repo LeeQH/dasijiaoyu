@@ -1,6 +1,5 @@
 package com.lqh.dasi.controller;
 
-import java.security.Security;
 import java.util.List;
 import java.util.Map;
 
@@ -9,16 +8,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.lqh.dasi.commen.ListUtils;
 import com.lqh.dasi.commen.SecurityAES;
 import com.lqh.dasi.commen.URLConstant;
 import com.lqh.dasi.pojo.Crawler;
-import com.lqh.dasi.pojo.Student;
 import com.lqh.dasi.pojo.Teacher;
 import com.lqh.dasi.service.CrawlerService;
 
 import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 
 /**
  * 爬虫的控制层
