@@ -52,15 +52,18 @@
 		infoSort(typeValue, methodValue);
 	}
 	function infoSort(param, order) {
-		var dataSorted = sortMethod(data, param, order);
 		var tbody = document.getElementById('body');
+		if("undefined" == typeof data||data.length==0){
+			data=getTableData(tbody);
+		}
+		var dataSorted = sortMethod(data, param, order);
 		clearTable(tbody);
 		addDataToTBody(tbody, dataSorted);
 	}
 	function sortMethod(data, param, order){
-		if(param==2||param==5){
+		if(param==2||param==5||param==7){
 			return sortForNumber(data, param, order);
-		}else if(param==3||param==4){
+		}else if(param==3||param==4||param==6){
 			return sortForDate(data, param, order);
 		}else{
 			return sortForChina(data, param, order);
@@ -99,6 +102,7 @@
 		
 		fromPost(url,params);
 	}
+	
 </script>
 
 </head>
@@ -107,24 +111,26 @@
 		<div class="form-inline navbar-fixed-top">
 			<span style="margin-left: 10px"></span>
 			<select class="form-control" id="sortType">
+				<option value="7">未上线天数</option>
+				<option value="5">剩余天数</option>
 				<option value="1">学生姓名</option>
 				<option value="2">手机号码</option>
-				<option value="3">上线日期</option>
-				<option value="4">结束日期</option>
-				<option value="5">最后上线日期</option>
-				<option value="6">未上线天数</option>
+				<option value="3">开通日期</option>
+<!-- 				<option value="4">结束日期</option> -->
+<!-- 				<option value="6">最后上线日期</option> -->
 			</select>
 			<select class="form-control" id="sortMethod">
-				<option value="asc">升序</option>
 				<option value="desc">降序</option>
+				<option value="asc">升序</option>
 			</select>
 			<button type="button" class="btn btn-primary" onclick="goSort()">确定</button>
 			<span style="margin-left: 50px"></span>
 			<input type="text" placeholder="输入文字回车搜索" onchange="searchTable(this)">
-			<button class="btn btn-primary" type="button" style="float: right;" onclick="updateLastDate('/crawler/updateLastDate.action')">更新最后上线日期</button>
-			<button class="btn btn-primary" type="button" style="float: right;" onclick="updateStudent('/crawler/updateStuInfo.action')">更新学生信息</button>
 			<!-- js导出 （释放服务器性能） -->
-			<button class="btn btn-primary"  type="button" style="float: right;" onclick="exportExcelWithJS()">下载本表格</button>
+			<button class="btn btn-primary" type="button" style="margin:1px;float: right;" onclick="exportExcelWithJS()">下载本表格</button>
+			<button class="btn btn-primary" type="button" style="margin:1px;float: right;" onclick="updateLastDate('/crawler/updateLastDate.action')">更新上线日期</button>
+			<button class="btn btn-primary" type="button" style="margin:1px;float: right;" onclick="updateStudent('/crawler/updateStuInfo.action')">更新学生信息</button>
+			
 		</div>
 		<br>
 		<br>
@@ -134,9 +140,9 @@
 				<tr>
 					<th>编号</th>
 					<th>学生姓名</th>
-					<th>家长姓名</th>
+<!-- 					<th>家长姓名</th> -->
 					<th>手机号码</th>
-					<th>上线日期</th>
+					<th>开通日期</th>
 					<th>结束日期</th>
 					<th>剩余天数</th>
 					<th>最后上线日期</th>
@@ -149,8 +155,8 @@
 					<tr>
 						<td><c:out value="${status.count}"/></td>
 						<td><c:out value="${stu.stuName}"/></td>
+<%-- 						<td><c:out value="${stu.parName}"/></td> --%>
 						<td><c:out value="${stu.telNum}"/></td>
-						<td><c:out value="${stu.parName}"/></td>
 						<td><fmt:formatDate value="${stu.startDate}" pattern="yyyy-MM-dd" /></td>
 						<td><fmt:formatDate value="${stu.endDate}" pattern="yyyy-MM-dd" /></td>
 						<td>

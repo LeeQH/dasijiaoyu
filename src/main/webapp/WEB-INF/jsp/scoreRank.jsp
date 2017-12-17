@@ -30,6 +30,34 @@
 		setIframeHeight();
 	});
 	
+	function goSort() {
+		var sortType = document.getElementById('sortType');
+		var index1 = sortType.selectedIndex;
+		var typeValue = sortType.options[index1].value;
+
+		var sortMethod = document.getElementById('sortMethod');
+		var index2 = sortMethod.selectedIndex;
+		var methodValue = sortMethod.options[index2].value;
+		console.log(typeValue+","+methodValue);
+		infoSort(typeValue, methodValue);
+	}
+	function infoSort(param, order) {
+		var tbody = document.getElementById('body');
+		if("undefined" == typeof data||data.length==0){
+			data=getTableData(tbody);
+		}
+		var dataSorted = sortMethod(data, param, order);
+		clearTable(tbody);
+		addDataToTBody(tbody, dataSorted);
+	}
+	function sortMethod(data, param, order){
+		if(param==2||param==3){
+			return sortForNumber(data, param, order);
+		}else{
+			return sortForChina(data, param, order);
+		}
+	}
+	
 	function updateMonthScore(path){
 		var loginName=window.parent.document.getElementById("loginName").value;
 		var loginPwd=window.parent.document.getElementById("loginPwd").value;
@@ -71,16 +99,50 @@
 		    }
 		});  
 	}
+	function queryScoreInfo(time){
+		var classid=window.parent.document.getElementById("classId").value;
+		console.log(classid+"."+time);
+		var url="<%=basePath%>/base/queryMonthScore.action";
+		var params={classid:classid,month:time};
+		fromPost(url,params);
+	}
 </script>
 
 </head>
 <body>
-<div style="width: 100%;">
-	<span style="margin-left: 15px;"></span>
-	<input type="text" placeholder="输入文字回车搜索" onchange="searchTable(this)">
-	<button class="btn btn-primary" type="button" style="float: right;" onclick="updateMonthScore('/crawler/updateMonthScore.action')">更新成绩</button>
-	<br><br>
-	<table style="margin-left: 10px;" class="table table-hover" id="default">
+	<div>
+		<div class="form-inline navbar-fixed-top">
+			<span style="margin-left: 10px"></span>
+			<select class="form-control" id="sortType">
+				<option value="1">学生姓名</option>
+				<option value="2">成绩</option>
+				<option value="3">目标</option>
+				<option value="4">是否完成</option>
+			</select>
+			<select class="form-control" id="sortMethod">
+				<option value="desc">降序</option>
+				<option value="asc">升序</option>
+			</select>
+			<button type="button" class="btn btn-primary" onclick="goSort()">确定</button>
+			<span style="margin-left: 50px"></span>
+			<input type="text" placeholder="输入文字回车搜索" onchange="searchTable(this)">
+			
+			<button class="btn btn-primary" type="button" style="margin:1px;float: right;" onclick="updateMonthScore('/crawler/updateMonthScore.action')">更新成绩</button>
+			
+			<div class="dropdown" style="margin:1px;float: right;">
+			  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+				 月份<span class="caret"></span>
+			  </button>
+			  <ul class="dropdown-menu" style="min-width: 62px;" aria-labelledby="dropdownMenu1">
+			  	<c:forEach items="${monthList}" var="month">
+				    <li style="cursor:pointer;text-align: center;" onclick="queryScoreInfo('${month}')"><c:out value="${month}"/></li>
+				</c:forEach>
+			  </ul>
+			</div>
+		</div>
+	
+		<br><br>
+		<table style="margin-left: 10px;" class="table table-hover" id="default">
 			<thead id="head">
 				<tr>
 					<th>编号</th>
@@ -111,7 +173,7 @@
 				</c:forEach>
 			</tbody>
 		</table>
-</div>
+	</div>
 </body>
 <jsp:include page="/WEB-INF/jsp/alert.jsp"></jsp:include>
 </html>

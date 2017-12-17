@@ -51,8 +51,12 @@ public class BaseController {
 	public ModelAndView queryMonthScore(String classid,String month){
 		ModelAndView mav=new ModelAndView();
 		List<MonthScoreInfo> monthScoreList=baseService.selectMonthScore(classid,month);
-		if (monthScoreList!=null) {
+		if (monthScoreList!=null&&monthScoreList.size()!=0) {
 			mav.addObject("monthScoreList", monthScoreList);
+			List<String> monthList=baseService.selectMonthByClassId(classid);
+			if(monthList!=null&&monthList.size()!=0){
+				mav.addObject("monthList", monthList);
+			}
 		}else {
 			mav.addObject("alertInfo", "无记录");
 		}

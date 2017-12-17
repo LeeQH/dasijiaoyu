@@ -262,9 +262,9 @@
       stu_id, stu_name, score, goal_score, finish_goal)
     values 
     <foreach collection="list" item="item" index="index" separator="," >  
-        (#{id,jdbcType=INTEGER}, #{month,jdbcType=CHAR}, #{classId,jdbcType=VARCHAR}, 
-      #{stuId,jdbcType=VARCHAR}, #{stuName,jdbcType=VARCHAR}, #{score,jdbcType=INTEGER}, 
-      #{goalScore,jdbcType=INTEGER}, #{finishGoal,jdbcType=BIT})
+        (#{item.id,jdbcType=INTEGER}, #{item.month,jdbcType=CHAR}, #{item.classId,jdbcType=VARCHAR}, 
+      #{item.stuId,jdbcType=VARCHAR}, #{item.stuName,jdbcType=VARCHAR}, #{item.score,jdbcType=INTEGER}, 
+      #{item.goalScore,jdbcType=INTEGER}, #{item.finishGoal,jdbcType=BIT})
     </foreach>  
   </insert>
   
@@ -280,4 +280,17 @@
         #{item.id,jdbcType=INTEGER}
      </foreach>
   </update>
+  
+  <update id="updateGoal" parameterType="com.lqh.dasi.pojo.MonthScoreInfo" >
+  	update month_score_info
+  	set
+  	goal_score=#{goalScore,jdbcType=INTEGER}
+  	where stu_id=#{stuId,jdbcType=VARCHAR}
+  </update>
+  
+   <select id="selectMonthByClassId" parameterType="java.lang.String" resultType="java.lang.String" >
+    select month from month_score_info
+    where class_id=#{classId,jdbcType=VARCHAR}
+    group by month order by month desc 
+  </select>
 </mapper>

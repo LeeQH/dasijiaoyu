@@ -113,8 +113,14 @@ BEFORE UPDATE ON `dasi_util`.`month_score_info`
 FOR EACH ROW 
 BEGIN
    -- 值不变的字段，new的值等于old的值，所以new的值不为空，即这个字段更新后肯定不为空
-   IF new.`score` IS NOT NULL AND new.`goal_score` IS NOT NULL AND new.`score` >= new.`goal_score` THEN
-      SET new.`finish_goal` = 1;
+--    IF new.`score` IS NOT NULL AND new.`goal_score` IS NOT NULL AND new.`score` >= new.`goal_score` THEN
+--       SET new.`finish_goal` = 1;
+--    END IF;
+   IF new.`goal_score` IS NULL OR new.`score` < new.`goal_score` THEN
+	SET new.`finish_goal` = 0;
+   END IF;
+   IF new.`score` >= new.`goal_score` THEN
+	SET new.`finish_goal` = 1;
    END IF;
 END $$ 
 DELIMITER ; 

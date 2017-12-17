@@ -193,6 +193,7 @@ public class BaseService {
 	public List<MonthScoreInfo> selectMonthScore(String classId, String month) {
 		MonthScoreInfoExample example = new MonthScoreInfoExample();
 		example.createCriteria().andClassIdEqualTo(classId).andMonthEqualTo(month);
+		example.setOrderByClause("score desc");
 		List<MonthScoreInfo> msList = monthScoreInfoMapper.selectByExample(example);
 		if (msList != null && msList.size() != 0) {
 			return msList;
@@ -256,8 +257,11 @@ public class BaseService {
 	public int updateGoalScore(String stuId,Integer goalScore) {
 		MonthScoreInfo monthScoreInfo=new MonthScoreInfo();
 		monthScoreInfo.setGoalScore(goalScore);
-		MonthScoreInfoExample example=new MonthScoreInfoExample();
-		example.createCriteria().andStuIdEqualTo(stuId);
-		return monthScoreInfoMapper.updateByExampleSelective(monthScoreInfo, example);
+		monthScoreInfo.setStuId(stuId);
+		return monthScoreInfoMapper.updateGoal(monthScoreInfo);
+	}
+	
+	public List<String> selectMonthByClassId(String classId){
+		return monthScoreInfoMapper.selectMonthByClassId(classId);
 	}
 }

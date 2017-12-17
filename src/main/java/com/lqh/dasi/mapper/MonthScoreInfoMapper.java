@@ -32,4 +32,8 @@ public interface MonthScoreInfoMapper {
     int insertBatch(List<MonthScoreInfo> record);
     //批量修改
     int updateBatch(List<MonthScoreInfo> record);
+    //批量目标
+    int updateGoal(MonthScoreInfo record);
+    //查询月份
+    List<String> selectMonthByClassId(String classId);
 }

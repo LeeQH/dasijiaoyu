@@ -1,3 +1,18 @@
+function getTableData(tbody){
+	var trs=tbody.getElementsByTagName("tr");
+	var data=new Array(trs.length);
+	for(var i=0;i<trs.length;i++){
+		var tds=trs[i].getElementsByTagName("td");
+		var temp=new Array(tds.length);
+		for(var j=0;j<tds.length;j++){
+			temp[j]=tds[j].innerText;
+		}
+		data[i]=temp;
+	}
+	return data;
+}
+
+
 /**
  * 清空元素table下的所有行
  * @param table table元素
@@ -37,9 +52,6 @@ function addDataToTHead(thead, dataHead) {
 function addDataToTBody(tbody, data) {
 	for (var i = 0; i < data.length; i++) {
 		var tr = document.createElement('tr');
-		var td1 = document.createElement('td');
-		td1.innerText = i+1;
-		tr.appendChild(td1);
 		for (var j = 0; j < data[i].length; j++) {
 			var td = document.createElement('td');
 			td.innerText = data[i][j];
@@ -58,10 +70,8 @@ function addDataToTBody(tbody, data) {
 function sortForChina(data, param, order) {
 	data.sort(function(a, b) {
 		if (order == 'asc') {//升序
-			console.log('asc');
 			return a[param].localeCompare(b[param], "zh");
 		} else {//默认降序desc
-			console.log('desc');
 			return b[param].localeCompare(a[param], "zh");
 		}
 	});
@@ -77,10 +87,8 @@ function sortForChina(data, param, order) {
 function sortForNumber(data, param, order) {
 	data.sort(function(a, b) {
 		if (order == 'asc') {//升序
-			console.log('asc');
 			return a[param] - b[param];
 		} else {//默认降序desc
-			console.log('desc');
 			return b[param] - a[param];
 		}
 	});
@@ -96,10 +104,8 @@ function sortForNumber(data, param, order) {
 function sortForDate(data, param, order) {
 	data.sort(function(a, b) {
 		if (order == 'asc') {//升序
-			console.log('asc');
 			return Date.parse(a[param]) - Date.parse(b[param]);
 		} else {//默认降序desc
-			console.log('desc');
 			return Date.parse(b[param]) - Date.parse(a[param]);
 		}
 	});
@@ -139,7 +145,12 @@ function searchTable(obj){
     }
 }
 
-
+/**
+ * 模拟提交表单
+ * @param url 提交的链接
+ * @param params json参数
+ * @param target 返回到哪个目标（iframe框架）
+ */
 function fromPost(url,params,target){  
     var tempform = document.createElement("form");  
     tempform.action = url;  
