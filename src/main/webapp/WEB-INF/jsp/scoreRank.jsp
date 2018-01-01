@@ -87,7 +87,7 @@
 		var goalScore=$("#"+stuId+"1").val();
 		$.ajax({  
 		    url:"<%=basePath%>/base/updateGoal.action",    //请求的url地址  
-		    dataType:"text",   //返回格式为json  
+		    dataType:"text",   //返回格式  
 		    async:true,//请求是否异步，默认为异步，这也是ajax重要特性  
 		    data:{"stuId":stuId,"goalScore":goalScore},    //参数值  
 		    type:"post",   //请求方式 get 或者post  

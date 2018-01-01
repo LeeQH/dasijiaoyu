@@ -19,6 +19,7 @@ import org.jsoup.select.Elements;
 
 import com.lqh.dasi.pojo.Crawler;
 import com.lqh.dasi.pojo.StuInfo;
+import com.lqh.dasi.pojo.StudyInfo;
 import com.lqh.dasi.pojo.TeacherInfo;
 
 public class CrawlerHandle {
@@ -155,6 +156,35 @@ public class CrawlerHandle {
 					continue;
 				col.add(tds.get(j).text().trim());
 			}
+			row.add(col);
+		}
+		return row;
+	}
+	
+	public static List<StudyInfo> getStudyInfo(Crawler crawler, String studyInfo_src){
+		CrawlerUtils.get(crawler, studyInfo_src);
+		if (crawler == null)
+			return null;
+
+		StudyInfo col=null;
+		List<StudyInfo> row = new ArrayList<StudyInfo>();
+		
+		Document doc = CrawlerUtils.getDocument(crawler);
+		Element table = null;
+		Elements trs = null;
+		Elements tds = null;
+
+		table = doc.select("table#newsarticleList").first();
+		trs = table.select("tr");
+		
+		for(int i=1,trSize=trs.size();i<trSize;i++){
+			tds = trs.get(i).select("td");
+			col=new StudyInfo();
+			col.setTime(tds.get(0).text().trim());
+			col.setCourse(tds.get(1).text().trim());
+			col.setPassNum(tds.get(2).text().trim());
+			col.setScore(tds.get(3).text().trim());
+			col.setUseTime(tds.get(4).text().trim());
 			row.add(col);
 		}
 		return row;

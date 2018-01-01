@@ -154,7 +154,7 @@
 				<c:forEach items="${stuList}" var="stu" varStatus="status">
 					<tr>
 						<td><c:out value="${status.count}"/></td>
-						<td><c:out value="${stu.stuName}"/></td>
+						<td><a data-toggle="modal" data-target="#myModal" onclick="queryStudyInfo('${stu.stuId}')"><c:out value="${stu.stuName}"/></a></td>
 <%-- 						<td><c:out value="${stu.parName}"/></td> --%>
 						<td><c:out value="${stu.telNum}"/></td>
 						<td><fmt:formatDate value="${stu.startDate}" pattern="yyyy-MM-dd" /></td>
@@ -176,6 +176,8 @@
 			</tbody>
 		</table>
 	</div>
+<!-- 	模拟框——弹出学生记录 -->
+<jsp:include page="/WEB-INF/jsp/studyInfo.jsp"></jsp:include>
 </body>
 <jsp:include page="/WEB-INF/jsp/alert.jsp"></jsp:include>
 </html>
